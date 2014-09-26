@@ -1,13 +1,14 @@
 
 # clover UImanager
 
-library(RGtk2)
-library(Biobase)
-library(flowCore)
-library(flowViz)
-
 ## -----------------------------------------------------------------------------
 ## Clover 
+
+
+## TODO
+## add import UCSC tracks
+## clickable to UCSC browser
+
 
 Clover=function(){
     
@@ -78,43 +79,45 @@ Clover=function(){
             ## need a list to store if want to support multiple files
             
             # assign data.frame to appspace for passing of variables
-            appspace[df] <- read.csv(dialog$getFilename())  # as.is=T,header=T
+            # no need to put the process, only sf is used for plotting
+            file=dialog$getFilename()
             
-            appspace[sf.exprs]=as.matrix(appspace[df])
-            #appspace[channels]=c("GenomicFeatures","H3K9me3_ChIPseq","H3K27me3_ChIPseq","DNAmethylation_pBAT_BisulfiteSeq")
+            sf=file2sf(file)
             
-            appspace[channels]=colnames(appspace[df])
-            appspace[anno.df]=as.data.frame(appspace[channels])
-            appspace[anno.adf]=AnnotatedDataFrame(data=appspace[anno.df])
+            # add an veggi name to sf for easy finding it when plotting
+            data.name=basename(file)
             
-            
-            appspace[sf]=new("seqFrame",
-                             exprs=appspace[sf.exprs],
-                             parameters=appspace[anno.adf],
-                             description=list(),
-                             featureAnnotation="")
-            
-            colnames(appspace[sf])=as.character(appspace[anno.df][,1])
-            
-                        
-            
-            data.name=basename(dialog$getFilename())
+            keyword(sf)$VEGGI.NAME=data.name
+               
+            appspace[sf]=sf
             
             # make basename(filename) the selector for the active.seqFrame
+            # ToDO:this is no use, active.seqFrame is decided by select.node
+            
+            # this is for get(selected.node.name, envir=.AppEnv) to fetch
+            ## all subsequent data will have their name as variable name for fetch
             assign(x=data.name,value=appspace[sf],envir=.AppEnv)
+            
+            # assign current active seqFrame
+            appspace[active.seqFrame]=sf
+            # althernatively can
+            # use selected node to set the active seqFrame
+            # get select the displayed root node
+            
+            
             
             # this assigns a variable called  "data.name" to .AppEnv
             # appspace[data.name]=appspace[sf]
             
             # set root rDataFrame the active.seqFrame
-#             x=get(data.name,envir=.AppEnv)
-#             show(x)
-#             appspace[active.seqFrame]=get(data.name,envir=.AppEnv)
-#             appspace[active.seqFrame]=x
-#             show(appspace[active.seqFrame])
+            #             x=get(data.name,envir=.AppEnv)
+            #             show(x)
+            #             appspace[active.seqFrame]=get(data.name,envir=.AppEnv)
+            #             appspace[active.seqFrame]=x
+            #             show(appspace[active.seqFrame])
             # moved to select.channnels
             
-            insertDataName(data.name,PlotPage.data.view)
+            insert.node(node.name=data.name,parent=PlotPage.data.view)
             
         }
         #print(is.environment(.GlobalEnv))
@@ -141,13 +144,21 @@ Clover=function(){
             #save_file(dialog$getFilename())
             #print(dialog$getFilename())
             file.name=paste(dialog$getFilename(),".csv",sep="")
-        cat("file saved to ",file.name,"\n")
+        cat("CSV file saved to ",file.name,"\n")
         write.csv(file=file.name,exprs(appspace[save_csv]))
         
         dialog$destroy()
         
         
     }
+    
+    
+    
+    ## open_bigWig
+    ## it would be nice one can simply input UCSC track location, then look at it globally
+    ## add a button conversion between UCSC 
+    
+    
     
     
     #save_file
@@ -185,13 +196,7 @@ Clover=function(){
     
     
     
-    ManualGate=function(manual.gate) {
-        
-    }
-    
-    
-    
-    
+    PolygonGate=polygon.gate
     
     RectangleGate=function(action,...) 
         statusbar$push(statusbar$getContextId("message"), 
@@ -240,7 +245,7 @@ Clover=function(){
         get_measure=list("GetMeasure",NULL,"GetMeasure",NULL,"Sequencing Data Summary",DataSummary),
         
         gate = list("Gate", NULL, "Gate", NULL, NULL, NULL),
-        manual_gate=list("ManualGate",NULL,"ManualGate",NULL,"Manual Gate",ManualGate),
+        polygon_gate=list("PolygonGate",NULL,"PolygonGate",NULL,"Polygon Gate",PolygonGate),
         rectangle_gate=list("RectangleGate",NULL,"RectangleGate",NULL,"Rectangle Gate",RectangleGate),
         
         plot = list("Plot", NULL, "Plot", NULL, NULL, NULL),
@@ -270,7 +275,9 @@ Clover=function(){
     
     ## -----------------------------------------------------------------------------
     ## Defining UI layout
-    xml="/Users/shengliu/DoScience/DoScience/Projects/Clover/Dev/Source/2014-08-28/Clover-menu.xml"
+    #xml="/Users/shengliu/DoScience/DoScience/Projects/Clover/Dev/Source/2014-08-28/Clover-menu.xml"
+    xml=system.file("etc", "Clover-menu.xml",package = "Clover")
+    
     id =  uimanager$addUiFromFile(xml)
     
     accelgroup <- uimanager$getAccelGroup()
@@ -403,20 +410,22 @@ Clover=function(){
     
     gate.button.table=gtkTable(rows=3, columns=3, homogeneous=T)
     
-    manual.gate=gtkButton(label="Manual")
-    rectangle.gate=gtkButton(label="Rectangle")
-    quadrant.gate=gtkButton(label="Quadrant")
-    kmeans.gate=gtkButton(label="Kmeans")
-    Norm2.gate=gtkButton(label="Norm2")
+    polygon.gate.button=gtkButton(label="Polygon")
+    rectangle.gate.button=gtkButton(label="Rectangle")
+    quadrant.gate.button=gtkButton(label="Quadrant")
+    range.gate.button=gtkButton(label="Range")
+    norm2.gate.button=gtkButton(label="Norm2")
     
     
     gate.button.table$attach(gate.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
     
-    gate.button.table$attach(manual.gate, left.attach = 0,1, top.attach = 1,2)
-    gate.button.table$attach(rectangle.gate, left.attach = 1,2, top.attach = 1,2)
-    gate.button.table$attach(quadrant.gate, left.attach = 2,3, top.attach = 1,2)
-    gate.button.table$attach(kmeans.gate, left.attach = 0,1, top.attach = 2,3)
-    gate.button.table$attach(Norm2.gate, left.attach = 1,2, top.attach = 2,3)
+    gate.button.table$attach(quadrant.gate.button, left.attach = 0,1, top.attach = 1,2)
+    gate.button.table$attach(rectangle.gate.button, left.attach = 1,2, top.attach = 1,2)
+    gate.button.table$attach(range.gate.button, left.attach = 2,3, top.attach = 1,2)
+    gate.button.table$attach(polygon.gate.button, left.attach = 0,1, top.attach = 2,3)
+    
+    
+    #gate.button.table$attach(norm2.gate.button, left.attach = 1,2, top.attach = 2,3)
     
     
     
@@ -432,15 +441,19 @@ Clover=function(){
     ## contains a table of buttons and an gtkTreeView 
     
     library(flowCore)
-    load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.ff.rda")
+    file=system.file("extdata", "Male.Het.df.csv",package = "Clover")
+    sf=file2sf(file)
+    
+    # load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.ff.rda")
     #load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.fs.rda")
     
     # data(Cars93 , package="MASS")
     
     # gtkTreeView for the Info
     # construct rGtkDataFrame
-    PlotPage.info.model <- rGtkDataFrame (exprs(Male.Het.ff))
-    #PlotPage.info.model$setFrame(Cars93[1:5 , 1:5])
+    #PlotPage.info.model <- rGtkDataFrame (exprs(Male.Het.ff))
+    PlotPage.info.model <- rGtkDataFrame (exprs(sf))
+
     
     
     # Displaying data as a list or table
@@ -473,19 +486,19 @@ Clover=function(){
     
     plot.button.table=gtkTable(rows=2, columns=3, homogeneous=T)
     
-    countour.plot=gtkButton(label="Countour")
-    scatter.plot=gtkButton(label="Scatter")
-    density.plot=gtkButton(label="Density")
-    histogram.plot=gtkButton(label="Histogram")
+    countour.plot.button=gtkButton(label="Countour")
+    scatter.plot.button=gtkButton(label="Scatter")
+    density.plot.button=gtkButton(label="Density")
+    histogram.plot.button=gtkButton(label="Histogram")
     
     plot.info.label=gtkLabel("Information")
     
     # plot.button.table$attach(plot.info.label,left.attach=0,1, right.attach=2,3, bottom.attach=2,3)
     
-    plot.button.table$attach(countour.plot, left.attach = 0,1, top.attach = 0,1)
-    plot.button.table$attach(scatter.plot, left.attach = 1,2, top.attach = 0,1)
-    plot.button.table$attach(density.plot, left.attach = 2,3, top.attach = 0,1)
-    plot.button.table$attach(histogram.plot, left.attach = 0,1, top.attach = 1,2)
+    plot.button.table$attach(scatter.plot.button, left.attach = 0,1, top.attach = 0,1)
+    plot.button.table$attach(density.plot.button, left.attach = 1,2, top.attach = 0,1)
+    #plot.button.table$attach(countour.plot.button, left.attach = 2,3, top.attach = 0,1)
+    #plot.button.table$attach(histogram.plot.button, left.attach = 0,1, top.attach = 1,2)
     #plot.button.table$attach(, left.attach = 1,2, top.attach = 2,3)
     
     PlotPage.rightPane$packStart(child=plot.button.table,expand=F,fill=F,padding=0)
@@ -550,20 +563,14 @@ Clover=function(){
     
     DataPage.leftPane$packStart(child=DataPage.data.view,expand=T,fill=T,padding=0)
     
-    #--------------
+    ##---------------------------------------------------------------------------
     ## DataPage.rightPane
     
     ## contains a table of buttons and an gtkTreeView 
     
-    
-    load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.ff.rda")
-    #load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.fs.rda")
-    
-    # data(Cars93 , package="MASS")
-    
     # gtkTreeView for the Info
     # construct rGtkDataFrame
-    DataPage.info.model <- rGtkDataFrame (exprs(Male.Het.ff))
+    DataPage.info.model <- rGtkDataFrame (exprs(sf))
     #DataPage.info.model$setFrame(Cars93[1:5 , 1:5])
     
     
@@ -585,8 +592,7 @@ Clover=function(){
     mapply(DataPage.info.view$insertColumnWithAttributes,
            position=-1,
            title=colnames(DataPage.info.model),
-           cell=list(gtkCellRendererText()),text=seq_len(ncol(DataPage.info.model))-1
-    )
+           cell=list(gtkCellRendererText()),text=seq_len(ncol(DataPage.info.model))-1)
     
     
     DataPage.info.scrolled.window<-gtkScrolledWindow()
@@ -600,189 +606,34 @@ Clover=function(){
     dataSummary=gtkButton(label="dataSummary")
     getMeasure=gtkButton(label="getMeasure")
     findEnriched=gtkButton(label="findEnrichedRegion")
-    #findEnrichedRegions=gtkButton(label="Density")
     
-    
-    
-    
-    #function.label=gtkLabel("Function")
+    ## function 
     function.info.label=gtkLabel("Information")
     
-    
-    
-    
     #function.button.table$attach(function.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
-    
     function.button.table$attach(dataSummary, left.attach = 0,1, top.attach = 1,2)
     function.button.table$attach(getMeasure, left.attach = 1,2, top.attach = 1,2)
     function.button.table$attach(findEnriched, left.attach = 2,3, top.attach = 1,2)
     
-    #function.button.table$attach(histogram.plot, left.attach = 0,1, top.attach = 1,2)
+    #function.button.table$attach(histogram.plot.button, left.attach = 0,1, top.attach = 1,2)
     #function.button.table$attach(, left.attach = 1,2, top.attach = 2,3)
     
     DataPage.rightPane$packStart(child=function.button.table,expand=F,fill=F,padding=0)
     DataPage.rightPane$packStart(child=function.info.label,expand=F,fill=F,padding=0)
-    
     DataPage.rightPane$packEnd(child=DataPage.info.scrolled.window,expand=T,fill=T,padding=0)
     
-    # m.gate=function(manual.gate){
-    #     
-    #     print("Manual gate")
-    #     
-    #     select.channels(main_window)
-    #     
-    # }
     
-    #gtkNotebookSetCurrentPage(notebook,page.num=1)
     
-    gSignalConnect(obj=manual.gate, signal="clicked", f=function(manual.gate) {
-        
-        
-        # it is better to move this function as a seperated file, so this file only does what its name says, instead of everything
-        
-        print("Manual gate")
-        
-        select.channels(main_window)
-        
-        # dev.new(..., noRStudioGD = T)
-        
-        # flowPlot need to be dynamic to the selection of flowframe
-        
-        
-        #--------
-        # determine active.seqFrame with selection by the user
-        
-        # once the mouse clicked on, the active.view and active.model has to be reset to the selected one
-        
-        # return selected node name
-        
-        ##################
-        # try change the model of the view when one clicked on the subnodes
-        # always change model to the corresponding selected nodes name 
-        # this means the base/root node needs to be assoicated with its node name too, instead of csv file name, or make the file name the model name # did this
-        # now catch the variable with the selected name
-        
-        
-        
-#              selection=appspace[active.view]$getSelection()
-#             # not really need active.view, there is only one view
-#             
-#              iter=gtkTreeSelectionGetSelected(selection)
-#         
-#              model=gtkTreeViewGetModel(appspace[active.view])
-#              
-#         
-#              
-#              selected.node.name=model$get(iter=iter$iter,column=0)[[1]]
-             #mode=gtkTreeModel
-        
-#          print(selected.node.name)
-
-## which to plot, ie. the active.seqFrame is determined by select.channels
-
-
-
-        ## no, you only need to change the sf for the plot, sf is not event he model
-        
-        ## always plot the active flowFrame, there is nothing to do with model and view, which is only to get names showing which to  plot
-        
-        #active.seqFrame=## selected node name
-        #appspace[active.seqFrame]=selected.node.name
-        
-        # appspace[active.seqFrame]=get(x=selected.node.name,envir=.AppEnv)
-
-        
-        #     assign(x=selected.node.name,value=model,envir=.AppEnv)
-        #     
-        #     appspace[active.seqFrame]=appspace[selected.node.name]
-        
-        
-        # connect the selected.node.name to the underneath seqFrame
-        # use their name
-        
-        
-        ##########################
-        #appspace[active.model]=gtkTreeViewGetModel(selection)
-        
-        ## there is only one tree view, but there is multiple dataset seqFrame serve as node to insert and for plot
-        ## tree view is only for display and interaction with user
-        
-        ## there is multiple view, each action creates one or more views, which has its own data store model
-        
-        ## when add nodes, is the new view automatically created, or has to set every time an action applies to a view
-        
-        # I think it has to be set again
-        
-        
-        #flowPlot(x=appspace[sf],plotParameters=c(appspace[channelX],appspace[channelY]))
-        
-        flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
-        
-        # gate
-        location <- locator(n =512, type = "o")
-        location.df=data.frame(location$x,location$y)
-        
-        colnames(location.df)[1]=appspace[channelX]
-        colnames(location.df)[2]=appspace[channelY]
-        
-        polygonGate <- polygonGate(.gate=location.df, filterId = "polygonGate")
-        
-        polygonGate.filter=filter(appspace[sf],polygonGate)
-        
-        print(summary(polygonGate.filter))
-        
-        #appspace[polygonGate.subset]=Subset(appspace[sf],polygonGate)
-        
-        appspace[polygonGate.split]=split(appspace[active.seqFrame],polygonGate)
-        # add new data as nodes to the exiting parent node
-        
-        child.node.name=paste(veggie(),names(appspace[polygonGate.split]),sep="_")
-        print(child.node.name)
-        # try change the model of the view when one clicked on the subnodes
-        # always change model to the corresponding selected nodes name 
-        
-        
-        ## add multiple child nodes support
-        
-        # child.node.name=paste(value,"polygonGate.subset",sep="_")
-        #assign(child.node.name,value=appspace[polygonGate.subset],envir=.AppEnv)
-        # make the single output results into a list then this will also work for single output gate
-        
-        
-        # the R way for repeated operation
-        # could have use for loop instead
-        sapply(seq_along(child.node.name),function(i){
-            assign(child.node.name[i],value=appspace[polygonGate.split][[i]],envir=.AppEnv) })
-        
-        insertDataName(data.name=child.node.name,parent=appspace[active.view],loc="insert")
-        # this parent view may need to be dynamic if support multiple view
-        
-        # return selected node name
-        #     selection=appspace[active.view]$getSelection()
-        #     iter=gtkTreeSelectionGetSelected(selection)
-        #     model=gtkTreeViewGetModel(appspace[active.view])
-        #     selected.node.name=model$get(iter=iter$iter,column=0)[[1]]
-        
- 
-        # save only the active seqFrame
-        #appspace[save_csv]=appspace[selected.node.name]
-        
-        #print(selected.node.name)
-        selected.node=selected.node.name(appspace[active.view])
-        appspace[save_csv]=get(selected.node,envir=.AppEnv)
-        
-        #appspace[save_csv]=appspace[child.node.name]
-        
-    }
-    )
+    # connect buttons
+    gSignalConnect(obj=polygon.gate.button, signal="clicked", f=polygon.gate)
+    gSignalConnect(obj=scatter.plot.button, signal="clicked", f=scatter.plot)    
+    gSignalConnect(obj=density.plot.button, signal="clicked", f=density.plot)    
+    gSignalConnect(obj=quadrant.gate.button, signal="clicked", f=quadrant.gate)   
+    gSignalConnect(obj=range.gate.button, signal="clicked", f=range.gate)    
+    gSignalConnect(obj=rectangle.gate.button, signal="clicked", f=rectangle.gate)
     
     main_window$showAll()
 }
-
-
-
-
-
 
 
 

@@ -1,32 +1,13 @@
 ## polygon.gate
 
 
-
-#gSignalConnect(obj=polygon.gate, signal="clicked", f=function(polygon.gate) {
-    
-    
-#polygon.gate=function() {
-# Error in (function ()  : 
-#               unused arguments (<pointer: 0x7f85294bf0e0>, <pointer: 0x7f852ce26000>)
-
 polygon.gate=function(action,window) {    
-    # it is better to move this function as a seperated file, so this file only does what its name says, instead of everything
+
     
     print("Polygon gate")
     
-    #select.channels(window)
     select.channels()
-    # select.channels  # this doesn't work, however when f=select.channels will work
-    
-    # dev.new(..., noRStudioGD = T)
-    
-    # flowPlot need to be dynamic to the selection of flowframe
-    
-    
-    #--------
-    # determine active.seqFrame with selection by the user
-    # once the mouse clicked on, the active.view and active.model has to be reset to the selected one
-    # return selected node name
+  
     
     ##################
     # try change the model of the view when one clicked on the subnodes

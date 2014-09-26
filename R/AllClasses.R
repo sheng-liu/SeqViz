@@ -1,10 +1,20 @@
 # add a new slot called featureAnnotation
 
+# for better display on mac for now
+# Rstudio graphics not clear
+options(device = "quartz")
+
+
 
 library(RGtk2)
 library(flowCore)
 library(flowViz)
-library(Biobase)   
+library(Biobase)
+library(flowStats)
+library(lattice) 
+# though flowViz load it, somehow it is not loaded when load the package
+
+
 # for Class AnnotatedDataFrame and its assoicated functions
 # its function selectChannels marks one of my function
 # it is importaed for flowCore, so presumably it would have imported
