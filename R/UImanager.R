@@ -12,8 +12,21 @@
 
 Clover=function(){
     
+    # initialize active.seqFrame
+    #file=system.file("extdata", "Initialize.csv",package = "Clover")
+    #sf=file2sf(file)
     
-    ## -----------------------------------------------------------------------------
+    #data.name=basename(file)
+    #keyword(sf)$VEGGI.NAME=data.name
+    #assign(x=data.name,value=sf,envir=.AppEnv)
+    
+    #appspace[active.seqFrame]=sf      
+    
+    #df=read.csv(file=file,header=T,as.is=T)
+    #appspace[PlotPage.table.model]=rGtkDataFrame(df)
+    #PlotPage.table.model <- rGtkDataFrame(df)
+    #PlotPage.table.view=gtkTreeView()
+    ## -------------------------------------------------------------------------
     ## UImanager 
     
     uimanager = gtkUIManager()
@@ -25,11 +38,13 @@ Clover=function(){
     main_window$setDefaultSize(800, 600)
     
     
-    ## -----------------------------------------------------------------------------
+    ## -------------------------------------------------------------------------
     ## Implementing callbacks
     
     
     ## file group
+    ## Open_Bam
+    
     Open_Bam= function(widget, window) {
         dialog<-gtkFileChooserDialog(
             title="Choose a Bam file",
@@ -40,11 +55,21 @@ Clover=function(){
             button2_label="gtk-open", button2_response=GtkResponseType["accept"]) 
         
         if(dialog$run()==GtkResponseType["accept"]){
-            #         df <- read.csv(dialog$getFilename())
-            #         load_spreadsheet(df, basename(dialog$getFilename()))
+            
+            # get file name, no further reading functions, as it is too big
+            file=dialog$getFilename()
+            appspace[bamFile]=file
+            
+            data.name=basename(file)
+            
+            
+            insert.node(node.name=data.name,parent=DataPage.node.view)
+            
+            
         }
         dialog$destroy()
     }    
+    
     
     Open_Annotation=function(widget, window) {
         dialog<-gtkFileChooserDialog(
@@ -56,12 +81,25 @@ Clover=function(){
             button2_label="gtk-open", button2_response=GtkResponseType["accept"]) 
         
         if(dialog$run()==GtkResponseType["accept"]){
-            #         df <- read.csv(dialog$getFilename())
-            #         load_spreadsheet(df, basename(dialog$getFilename()))
+            
+            file=dialog$getFilename()
+            appspace[annotationFile]=file
+            
+            
+            data.name=basename(file)
+            
+            # insert.node(node.name=data.name,parent=DataPage.annotation.view)
+            
+            
+            
+            #data=getFeatureAnnotation(annotationFile=file)
+            #anno=featureAnnotation(data)
+            #appspace[featureAnnotation]=anno
         }
         dialog$destroy()
         
     }
+    
     
     Open_CSV=function(widget, window) {
         dialog=gtkFileChooserDialog(
@@ -88,17 +126,22 @@ Clover=function(){
             data.name=basename(file)
             
             keyword(sf)$VEGGI.NAME=data.name
-               
-            appspace[sf]=sf
             
-            # make basename(filename) the selector for the active.seqFrame
-            # ToDO:this is no use, active.seqFrame is decided by select.node
+
             
-            # this is for get(selected.node.name, envir=.AppEnv) to fetch
-            ## all subsequent data will have their name as variable name for fetch
-            assign(x=data.name,value=appspace[sf],envir=.AppEnv)
+            seqFrame.list=list()
+            seqFrame.list[[data.name]]=data.name
+            appspace[seqFrame.list]=seqFrame.list
             
-            # assign current active seqFrame
+            # store it in the appspace, later it can be fetched by variable name 
+            # assign(x=data.name,value=appspace[seqFrame.list][[data.name]],envir=.AppEnv)
+            
+
+            
+            # active.seqFrame is decided here when new data inserted
+            # later it is specified by select.node
+            # set active.seqFrame to the newly loaded seqFrame
+            cat("active.seqFrame set to inserted seqFrame\n")
             appspace[active.seqFrame]=sf
             # althernatively can
             # use selected node to set the active seqFrame
@@ -107,7 +150,7 @@ Clover=function(){
             
             
             # this assigns a variable called  "data.name" to .AppEnv
-            # appspace[data.name]=appspace[sf]
+            # appspace[data.name]=appspace[ ]
             
             # set root rDataFrame the active.seqFrame
             #             x=get(data.name,envir=.AppEnv)
@@ -117,7 +160,9 @@ Clover=function(){
             #             show(appspace[active.seqFrame])
             # moved to select.channnels
             
-            insert.node(node.name=data.name,parent=PlotPage.data.view)
+            insert.node(node.name=data.name,parent=PlotPage.node.view)
+            
+            #insert.node(node.name=data.name,tree.view=PlotPage.node.view,method="append")
             
         }
         #print(is.environment(.GlobalEnv))
@@ -136,21 +181,45 @@ Clover=function(){
             title="Enter a name for the file",
             parent=window,
             action="save", 
-            button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
+            #button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
             button2_label="gtk-save", button2_response=GtkResponseType["accept"])
         
-        if(dialog$run()==GtkResponseType["accept"])
-            
-            #save_file(dialog$getFilename())
-            #print(dialog$getFilename())
+        if(dialog$run()==GtkResponseType["accept"]){
             file.name=paste(dialog$getFilename(),".csv",sep="")
-        cat("CSV file saved to ",file.name,"\n")
-        write.csv(file=file.name,exprs(appspace[save_csv]))
+            cat("CSV file saved to ",file.name,"\n")
+            write.csv(file=file.name,exprs(appspace[save_csv]))
+            dialog$destroy()
+        }
         
-        dialog$destroy()
+    }
+    
+    # note this only saves the current active window which is show at the top of the x11 window
+    Save_PDF=function(widget, window) {
+        dialog<-gtkFileChooserDialog(
+            title="Enter a name for the file",
+            parent=window,
+            action="save", 
+            #button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
+            button2_label="gtk-save", button2_response=GtkResponseType["accept"]
+        )
+        
+        if (dialog$run()==GtkResponseType["accept"]) {
+            
+            file.name=paste(dialog$getFilename(),".pdf",sep="")
+            cat("PDF file saved to ",file.name,"\n")
+            dev.copy2pdf(file = file.name)
+            dialog$destroy()
+            
+        } #else if(dialog$run()==GtkResponseType["cancel"])
+        #dialog$destroy()
+        # need to click twice to close, same as the close button
         
         
     }
+    
+    
+    
+    
     
     
     
@@ -164,6 +233,62 @@ Clover=function(){
     #save_file
     
     Quit=function(widget, window) window$destroy()
+    
+    
+    
+    # Demo
+    Demo=function(widget,window) {
+        # code copy from Open_CSV(), see logic there
+        file=system.file("extdata", "Demo.csv",package = "Clover")
+        sf=file2sf(file)
+        data.name=basename(file)
+        keyword(sf)$VEGGI.NAME=data.name
+                
+        seqFrame.list=list()
+        seqFrame.list[[data.name]]=data.name
+        appspace[seqFrame.list]=seqFrame.list
+        
+        cat("active.seqFrame set to inserted seqFrame\n")
+        appspace[active.seqFrame]=sf        
+        insert.node(node.name=data.name,parent=PlotPage.node.view)
+        
+        
+        ## populate PlotPage.table.view
+        ## change model does not change anything, until using mapply populated the view
+        ## so the operation is on view, and it is after fill in the column it will take effect
+        
+        
+        #         appspace[PlotPage.table.model]=rGtkDataFrame(exprs(sf))
+        #         appspace[PlotPage.table.view]<-gtkTreeView(appspace[PlotPage.table.model])
+        #         
+        #         mapply(appspace[PlotPage.table.view]$insertColumnWithAttributes,
+        #                position=-1,
+        #                title=colnames(appspace[PlotPage.table.model]),
+        #                cell=list(gtkCellRendererText()),text=seq_len(ncol(appspace[PlotPage.table.model]))-1
+        #         )
+        # no way to change it through view, can display new easily        
+        
+        ## populate PlotPage.table.view
+        ## simply change its underlining data frame through rGtkDataFrameSetFrame
+        
+        # PlotPage.table.view$setFrame(rGtkDataFrame(exprs(sf)))
+        
+        # replace frame
+        #rGtkDataFrameSetFrame(appspace[PlotPage.table.model],frame=exprs(sf))
+        #rGtkDataFrameSetFrame(PlotPage.table.model,frame=exprs(sf))
+        
+        # replace model
+        #     df=exprs(sf)
+        #     gtkDF=rGtkDataFrame(df)
+        #PlotPage.table.view$setModel(gtkDF)
+        #     appspace[active.table.view]$setModel(gtkDF)
+        #     appspace[PlotPage.table.view]$setModel(gtkDF)
+        
+        update.table(df=exprs(sf),table.view=appspace[active.table.view])
+        
+        gtkNotebookSetCurrentPage(notebook,page.num=1)
+    }
+    
     
     
     ## tool group
@@ -213,6 +338,10 @@ Clover=function(){
     ## -----------------------------------------------------------------------------
     ## defining the actions
     
+    # xml defines what icon to put into tool bar and menu bar
+    
+    
+    
     # fileActionGroup
     fileActionGroup=gtkActionGroup(name="fileActionGroup")
     
@@ -224,6 +353,7 @@ Clover=function(){
         open_anno = list("Open_Annotation", "gtk-open", "Open_Annotation", NULL, "Open Annotation File", Open_Annotation),
         open_csv = list("Open_CSV", "gtk-open", "Open_CSV", NULL, "Open CSV File", Open_CSV),
         save_csv = list("Save_CSV", "gtk-save", "Save_CSV", "<alt>S", "Save CSV File", Save_CSV),
+        save_pdf = list("Save_PDF", "gtk-save", "Save_PDF", "<ctrl>S", "Save PDF File", Save_PDF),
         quit = list("Quit", "gtk-quit", "_Quit", "<ctrl>Q", "Quit", Quit),
         
         edit = list("Edit", NULL, "Edit", NULL, NULL, NULL),
@@ -259,6 +389,7 @@ Clover=function(){
     
     helpActionGroup <- gtkActionGroup(name="helpActionGroup")
     helpActionEntries <- list(  # name,ID,label,accelerator,tooltip,callback
+        demo=list("Demo","","Demo",NULL,"Load Demo Data",Demo),
         help = list("Help", "", "Help", NULL, "Open Help Doc", NULL),
         about = list("About", "gtk-about", "About", NULL, "About Clover", 
                      NULL)
@@ -273,9 +404,9 @@ Clover=function(){
     uimanager$insertActionGroup(toolActionGroup,0)
     uimanager$insertActionGroup(helpActionGroup,0)
     
-    ## -----------------------------------------------------------------------------
+    ## -------------------------------------------------------------------------
     ## Defining UI layout
-    #xml="/Users/shengliu/DoScience/DoScience/Projects/Clover/Dev/Source/2014-08-28/Clover-menu.xml"
+    
     xml=system.file("etc", "Clover-menu.xml",package = "Clover")
     
     id =  uimanager$addUiFromFile(xml)
@@ -283,7 +414,7 @@ Clover=function(){
     accelgroup <- uimanager$getAccelGroup()
     main_window$addAccelGroup(accelgroup)
     
-    ## -----------------------------------------------------------------------------
+    ## -------------------------------------------------------------------------
     ## Creating widgets for the actions
     
     menubar <- uimanager$getWidget("/menubar")
@@ -291,9 +422,7 @@ Clover=function(){
     statusbar <- gtkStatusbar()
     
     
-    
-    
-    ## -----------------------------------------------------------------------------
+    ## -------------------------------------------------------------------------
     ## Integrating the components
     vbox <- gtkVBox()
     
@@ -383,21 +512,27 @@ Clover=function(){
     # fill in data to PlotPage.data.model
     
     # setup gtkTreeView to display gtkTreeStore model
-    PlotPage.data.view=gtkTreeView()
+    PlotPage.node.view=gtkTreeView()
     
     ## share the view
-    appspace[active.view]=PlotPage.data.view
-    appspace[active.model]=PlotPage.data.model
+    appspace[active.view]=PlotPage.node.view
+    #appspace[active.table.view]=PlotPage.table.view
+    
+    #### somehow this single line is able to make the view dynamic
+    ## seems wiget is constantly lisenting to varialbes?
+    ## all the changes in gate is made to appspace[active.view]
+    ## and it is able to insert node into this view in this clover function environment
+    
     
     
     # insert column one by one
-    PlotPage.data.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
+    PlotPage.node.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
                                                   title="Plot Data",
                                                   cell=gtkCellRendererText(),
                                                   text=1-1)  
     
     # add model to view
-    PlotPage.data.view$setModel(PlotPage.data.model)
+    PlotPage.node.view$setModel(PlotPage.data.model)
     
     
     
@@ -417,12 +552,20 @@ Clover=function(){
     norm2.gate.button=gtkButton(label="Norm2")
     
     
-    gate.button.table$attach(gate.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
+    gate.button.table$attach(
+        gate.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
     
-    gate.button.table$attach(quadrant.gate.button, left.attach = 0,1, top.attach = 1,2)
-    gate.button.table$attach(rectangle.gate.button, left.attach = 1,2, top.attach = 1,2)
-    gate.button.table$attach(range.gate.button, left.attach = 2,3, top.attach = 1,2)
-    gate.button.table$attach(polygon.gate.button, left.attach = 0,1, top.attach = 2,3)
+    gate.button.table$attach(
+        quadrant.gate.button, left.attach = 0,1, top.attach = 1,2)
+    
+    gate.button.table$attach(
+        rectangle.gate.button, left.attach = 1,2, top.attach = 1,2)
+    
+    gate.button.table$attach(
+        range.gate.button, left.attach = 2,3, top.attach = 1,2)
+    
+    gate.button.table$attach(
+        polygon.gate.button, left.attach = 0,1, top.attach = 2,3)
     
     
     #gate.button.table$attach(norm2.gate.button, left.attach = 1,2, top.attach = 2,3)
@@ -434,16 +577,17 @@ Clover=function(){
     PlotPage.leftPane$packEnd(child=gate.button.table,expand=F,fill=F,padding=0)
     # PlotPage.leftPane$packEnd(child=gate.label,expand=F,fill=F,padding=0)
     
-    PlotPage.leftPane$packStart(child=PlotPage.data.view,expand=T,fill=T,padding=0)
+    PlotPage.leftPane$packStart(child=PlotPage.node.view,expand=T,fill=T,padding=0)
     
     ## PlotPage.rightPane
     
     ## contains a table of buttons and an gtkTreeView 
     
-    library(flowCore)
-    file=system.file("extdata", "Male.Het.df.csv",package = "Clover")
-    sf=file2sf(file)
+    ##------------------------------------------------------------------------------
+    ## table
     
+    #file=system.file("extdata", "Demo.csv",package = "Clover")
+    #sf=file2sf(file)
     # load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.ff.rda")
     #load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.fs.rda")
     
@@ -451,36 +595,52 @@ Clover=function(){
     
     # gtkTreeView for the Info
     # construct rGtkDataFrame
-    #PlotPage.info.model <- rGtkDataFrame (exprs(Male.Het.ff))
-    PlotPage.info.model <- rGtkDataFrame (exprs(sf))
-
+    #PlotPage.table.model <- rGtkDataFrame (exprs(Male.Het.ff))
     
+    #appspace[PlotPage.table.model]=rGtkDataFrame(df)
+    
+    #PlotPage.table.model <- rGtkDataFrame (exprs(appspace[active.seqFrame]))
     
     # Displaying data as a list or table
-    PlotPage.info.view<-gtkTreeView(PlotPage.info.model)
+    #PlotPage.table.view<-gtkTreeView(appspace[PlotPage.table.model])
     
+    
+    # PlotPage.table.view need to made public to able to be dynamic display
+    #PlotPage.table.view=appspace[PlotPage.table.view]
+    PlotPage.table.view=gtkTreeView()
+    
+    appspace[PlotPage.table.view]=PlotPage.table.view
+    
+    appspace[active.table.view]=PlotPage.table.view
     # construct gtkTreeViewColumn
-    PlotPage.info.column<-gtkTreeViewColumn()
+    #PlotPage.info.column<-gtkTreeViewColumn()
     
     # PlotPage.info.column$setTitle("Manufacturer")
     
-    cell_renderer<-gtkCellRendererText()
-    PlotPage.info.column$packStart(cell_renderer)
-    PlotPage.info.column$addAttribute(cell_renderer,"text",0)
+    #cell_renderer<-gtkCellRendererText()
+    #PlotPage.info.column$packStart(cell_renderer)
+    #PlotPage.info.column$addAttribute(cell_renderer,"text",0)
     
     # insert gtkTreeViewColumn to the first position of the column
-    # PlotPage.info.view$insertColumn(PlotPage.info.column,0)
+    # PlotPage.table.view$insertColumn(PlotPage.info.column,0)
     
-    mapply(PlotPage.info.view$insertColumnWithAttributes,
-           position=-1,
-           title=colnames(PlotPage.info.model),
-           cell=list(gtkCellRendererText()),text=seq_len(ncol(PlotPage.info.model))-1
-    )
+    # no need to initilize
+    #         mapply(PlotPage.table.view$insertColumnWithAttributes,
+    #                position=-1,
+    #                title=colnames(appspace[PlotPage.table.model]),
+    #                cell=list(gtkCellRendererText()),text=seq_len(ncol(appspace[PlotPage.table.model]))-1
+    #         )
     
+    
+    #     mapply(appspace[PlotPage.table.view]$insertColumnWithAttributes,
+    #            position=-1,
+    #            title=colnames(appspace[PlotPage.table.model]),
+    #            cell=list(gtkCellRendererText()),text=seq_len(ncol(appspace[PlotPage.table.model]))-1
+    #     )
     
     PlotPage.info.scrolled.window<-gtkScrolledWindow()
-    PlotPage.info.scrolled.window$add(PlotPage.info.view)
-    
+    #PlotPage.info.scrolled.window$add(appspace[PlotPage.table.view])
+    PlotPage.info.scrolled.window$add(PlotPage.table.view)
     
     ## Graph buttons
     
@@ -519,19 +679,21 @@ Clover=function(){
     
     
     # define gtkTreeStore model with one column stores "character"
-    DataPage.data.model=gtkTreeStore("gchararray")
+    DataPage.node.model=gtkTreeStore("gchararray")
     
     # setup gtkTreeView to display gtkTreeStore model
-    DataPage.data.view=gtkTreeView()
+    DataPage.node.view=gtkTreeView()
     
     # insert column one by one
-    DataPage.data.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
+    DataPage.node.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
                                                   title="Sequencing Data",
                                                   cell=gtkCellRendererText(),
                                                   text=1-1)  
     
     # add model to view
-    DataPage.data.view$setModel(DataPage.data.model)
+    DataPage.node.view$setModel(DataPage.node.model)
+    
+    appspace[active.data.view]=DataPage.node.view
     
     annotation.label=gtkLabel("Annotation_mm9")
     
@@ -561,7 +723,7 @@ Clover=function(){
     DataPage.leftPane$packEnd(child=annotation.button.table,expand=F,fill=F,padding=0)
     # PlotPage.leftPane$packEnd(child=gate.label,expand=F,fill=F,padding=0)
     
-    DataPage.leftPane$packStart(child=DataPage.data.view,expand=T,fill=T,padding=0)
+    DataPage.leftPane$packStart(child=DataPage.node.view,expand=T,fill=T,padding=0)
     
     ##---------------------------------------------------------------------------
     ## DataPage.rightPane
@@ -570,30 +732,31 @@ Clover=function(){
     
     # gtkTreeView for the Info
     # construct rGtkDataFrame
-    DataPage.info.model <- rGtkDataFrame (exprs(sf))
+    #   DataPage.info.model <- rGtkDataFrame (exprs(sf))
     #DataPage.info.model$setFrame(Cars93[1:5 , 1:5])
     
     
     # Displaying data as a list or table
-    DataPage.info.view<-gtkTreeView(DataPage.info.model)
+    #    DataPage.info.view<-gtkTreeView(DataPage.info.model)
     
     # construct gtkTreeViewColumn
-    DataPage.info.column<-gtkTreeViewColumn()
+    #    DataPage.info.column<-gtkTreeViewColumn()
     
     # DataPage.info.column$setTitle("Manufacturer")
     
-    cell_renderer<-gtkCellRendererText()
-    DataPage.info.column$packStart(cell_renderer)
-    DataPage.info.column$addAttribute(cell_renderer,"text",0)
+    #    cell_renderer<-gtkCellRendererText()
+    #    DataPage.info.column$packStart(cell_renderer)
+    #    DataPage.info.column$addAttribute(cell_renderer,"text",0)
     
     # insert gtkTreeViewColumn to the first position of the column
     # DataPage.info.view$insertColumn(DataPage.info.column,0)
     
-    mapply(DataPage.info.view$insertColumnWithAttributes,
-           position=-1,
-           title=colnames(DataPage.info.model),
-           cell=list(gtkCellRendererText()),text=seq_len(ncol(DataPage.info.model))-1)
-    
+    #     mapply(DataPage.info.view$insertColumnWithAttributes,
+    #            position=-1,
+    #            title=colnames(DataPage.info.model),
+    #            cell=list(gtkCellRendererText()),text=seq_len(ncol(DataPage.info.model))-1)
+    #     
+    DataPage.info.view=gtkTreeView()    
     
     DataPage.info.scrolled.window<-gtkScrolledWindow()
     DataPage.info.scrolled.window$add(DataPage.info.view)
@@ -603,26 +766,35 @@ Clover=function(){
     
     function.button.table=gtkTable(rows=3, columns=3, homogeneous=T)
     
-    dataSummary=gtkButton(label="dataSummary")
-    getMeasure=gtkButton(label="getMeasure")
+    data.summary.button=gtkButton(label="dataSummary")
+    get.measure.button=gtkButton(label="getMeasure")
     findEnriched=gtkButton(label="findEnrichedRegion")
     
     ## function 
     function.info.label=gtkLabel("Information")
     
     #function.button.table$attach(function.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
-    function.button.table$attach(dataSummary, left.attach = 0,1, top.attach = 1,2)
-    function.button.table$attach(getMeasure, left.attach = 1,2, top.attach = 1,2)
+    function.button.table$attach(data.summary.button, left.attach = 0,1, top.attach = 1,2)
+    function.button.table$attach(get.measure.button, left.attach = 1,2, top.attach = 1,2)
     function.button.table$attach(findEnriched, left.attach = 2,3, top.attach = 1,2)
     
     #function.button.table$attach(histogram.plot.button, left.attach = 0,1, top.attach = 1,2)
-    #function.button.table$attach(, left.attach = 1,2, top.attach = 2,3)
+    # add a spinner for fun
+    # also shows progress 
+#     spinner <- gtkSpinner()
+#     spinner["visible"]=F
+#     spinner["active"]=F
+    
+#    appspace[spinner]=spinner
+#    function.button.table$attach(spinner, left.attach = 2,3, top.attach = 2,3)
+    
+    
     
     DataPage.rightPane$packStart(child=function.button.table,expand=F,fill=F,padding=0)
     DataPage.rightPane$packStart(child=function.info.label,expand=F,fill=F,padding=0)
     DataPage.rightPane$packEnd(child=DataPage.info.scrolled.window,expand=T,fill=T,padding=0)
     
-    
+    main_window$showAll()
     
     # connect buttons
     gSignalConnect(obj=polygon.gate.button, signal="clicked", f=polygon.gate)
@@ -632,8 +804,21 @@ Clover=function(){
     gSignalConnect(obj=range.gate.button, signal="clicked", f=range.gate)    
     gSignalConnect(obj=rectangle.gate.button, signal="clicked", f=rectangle.gate)
     
-    main_window$showAll()
+    
+    # connect key-press-event with view
+    # gSignalConnect(PlotPage.node.view, "key-press-event", delete.node) 
+    gSignalConnect(obj=appspace[active.view], signal="key-press-event", f=delete.node)
+    gSignalConnect(obj=get.measure.button, signal="clicked", f=get.measure)
+    gSignalConnect(obj=data.summary.button, signal="clicked", f=data.summary)
+    
+    
+    
+    
 }
+
+## nomenclature
+## tree.view  gtkTreeView is named as node.view and table.view for better discriminition
+
 
 
 

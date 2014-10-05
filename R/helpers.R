@@ -67,26 +67,12 @@ file2sf=function(file.path){
            exprs=sf.exprs,
            parameters=anno.adf,
            description=list(FILENAME=data.name,GUID=data.name),
-           featureAnnotation="")
+           featureAnnotation=data.frame())
     return(sf)
 }
 
 
 
-save_PDF=function(widget, window) {
-    dialog<-gtkFileChooserDialog(
-        title="Enter a name for the file",
-        parent=window,
-        action="save", 
-        button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
-        button2_label="gtk-save", button2_response=GtkResponseType["accept"])
-    
-    if(dialog$run()==GtkResponseType["accept"])
-        
-        file.name=paste(dialog$getFilename(),".pdf",sep="")
-    cat("PDF file saved to ",file.name,"\n")
-    dev.copy2pdf(file = file.name)
-    dialog$destroy()
-}
+
 
 

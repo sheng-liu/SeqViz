@@ -16,10 +16,33 @@ range.gate=function(action, window){
     
     
     
+
+    ##--------------------------------------------------------------------------
+    ## data  for mouse event
+    
+    ## let's first deal with there is only one channel selected
+    
+    model=appspace[active.view]$getModel()
+    selected.node=selected.node(appspace[active.view])
+    selected.frame=get(x=selected.node,envir=.AppEnv)
+    keyword(selected.frame,"GUID")
+    dat=selected.frame
+
+    channels=paste(checked.channels.name,collapse="`+`")
+    
+
+    df=data.frame(exprs(dat))
+    
+    f=sprintf("plot(density(x=df[,'%s']),col='red',main='',xlab='%s')",channels,channels)
+    #parse(text=f)
+    #eval(parse(text=f))
+    
+    
     ##--------------------------------------------------------------------------
     ## mouse events   
     
-    xWindow=X11()
+    #xWindow=X11()
+    X11()
     plot.new()
     # this plot.new is required as plot(eval(parse(text = f))) 
     # is not recoginized as a plot when put inside mouse event handlers
@@ -28,16 +51,19 @@ range.gate=function(action, window){
     
     mousedown <- function(buttons, x, y) {
         
-        x.cord=grconvertX(x,from="ndc",to="user")
-        y.cord=grconvertY(y,from="ndc",to="user")
-        
-        eval(parse(text=f))
-        abline(v=x.cord,col="cornflowerblue")
-        
-        cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
-        cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
-        appspace[x.cord.ini]=x.cord
-        NULL
+        if(length(buttons)==2) "Done"
+        else {
+            x.cord=grconvertX(x,from="ndc",to="user")
+            y.cord=grconvertY(y,from="ndc",to="user")
+            
+            eval(parse(text=f))
+            abline(v=x.cord,col="cornflowerblue")
+            
+            cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
+            cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
+            appspace[x.cord.ini]=x.cord
+            NULL
+        }
     }
     
     mousemove=function(buttons,x,y){
@@ -60,43 +86,31 @@ range.gate=function(action, window){
         NULL
         
     }
-
-    keybd <- function(key) {
-        cat("Key <", key, ">\n", sep = "")
-        #if (key=="ctrl-Q") "Done"
-        
-        #if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
-        if (key=="ctrl-S") {
-            save_PDF(window=xWindow)
-            "Done"
-        }
-    }
+    
+    #     keybd <- function(key) {
+    #         cat("Key <", key, ">\n", sep = "")
+    #         #if (key=="ctrl-Q") "Done"
+    #         
+    #         #if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
+    #         if (key=="ctrl-S") {
+    #             Save_PDF(window=xWindow)
+    #             "Done"
+    #         }
+    #     }
     
     getGraphicsEvent("Click and drag to draw rangeGate",
                      onMouseDown = mousedown,
-                     onMouseMove = mousemove,
-                     onKeybd = keybd) 
+                     onMouseMove = mousemove
+                     #                      onKeybd = keybd
+    ) 
     
+
+
+
+
     ##--------------------------------------------------------------------------
-    ## data  
-    
-    ## let's first deal with there is only one channel selected
-    
-    model=appspace[active.view]$getModel()
-    selected.node=selected.node(appspace[active.view])
-    selected.frame=get(x=selected.node,envir=.AppEnv)
-    keyword(selected.frame,"GUID")
-    dat=selected.frame
+    ## data 
 
-    channels=paste(checked.channels.name,collapse="`+`")
-    
-
-    df=data.frame(exprs(dat))
-    
-    f=sprintf("plot(density(x=df[,'%s']),col='red',main='',xlab='%s')",channels,channels)
-    #parse(text=f)
-    #eval(parse(text=f))
-        
     # use matrix as input, can also use list
     param=cbind(c(appspace[x.cord.ini],appspace[x.cord.end]))
     colnames(param)=channels
@@ -123,6 +137,10 @@ range.gate=function(action, window){
         assign(child.node.name[i],value=appspace[rangeGate.split][[i]],envir=.AppEnv) })
     
     insert.node(node.name=child.node.name,parent=appspace[active.view],loc="insert")
+    
+    # update infor 
+    PlotPage.info.model <- rGtkDataFrame (exprs(appspace[active.seqFrame]))
+    
     
     ## adjust save_csv to be dynamic to selected.node
     selected.node=selected.node(appspace[active.view])

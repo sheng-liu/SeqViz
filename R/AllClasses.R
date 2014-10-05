@@ -26,7 +26,7 @@ library(lattice)
 ## Class seqFrame
 
 setClass(Class="seqFrame",
-         representation(featureAnnotation="character"),
+         representation(featureAnnotation="data.frame"),
          contains="flowFrame") 
 
 # getClass("seqFrame")

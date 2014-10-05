@@ -10,7 +10,6 @@ scatter.plot=function(action,window){
     
     select.channels()
     
-    
     # flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
     # this doens't use the range parameter so only this works without proper annotation, lucky to use this one first
     
@@ -61,6 +60,8 @@ scatter.plot=function(action,window){
     f=sprintf("xyplot(`%s`~`%s`,data =dat,smooth=F,outline=T )",y,x)
     parse(text = f)
     #dev.new()
+    ## dev.new gives device based on the operation system.
+    
     dev.new(width=6,height=4)
     plot(eval(parse(text = f)))
     
@@ -78,27 +79,11 @@ scatter.plot=function(action,window){
     #> xyplot(`Male.Het.H3K9me3`~`Male.Het.H3K27me3`, data =dat )
     #> xyplot(`Male.Het.H3K9me3`~`Male.Het.H3K27me3`, data =dat ,smooth=F)
     
+    ## TODO
+    ## GUID maybe need to change to the corresponding fruit name 
     
     
     
 }
-
-
-# countour.plot=function(){
-#     print("Countour plot")
-#     
-#     select.channels()
-#     
-#     
-#     
-#     
-# }
-
-
-##TODO
-## GUID maybe need to change to the corresponding fruit name 
-
-
-
 
 

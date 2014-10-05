@@ -5,6 +5,7 @@
             <menuitem name="Open_Annotation" action="Open_Annotation"/>
             <menuitem name="Open_CSV" action="Open_CSV"/>
             <menuitem name="Save_CSV" action="Save_CSV"/>
+            <menuitem name="Save_PDF" action="Save_PDF"/>
             <separator />
             <menuitem name="Quit_Clover" action="Quit"/>
         </menu>
@@ -37,6 +38,7 @@
                 </menu>
         </menu>
         <menu name="Help" action="Help">
+                <menuitem action="Demo"/>
                 <menuitem action="Help"/>
                 <menuitem action="About"/>
         </menu>
@@ -49,6 +51,7 @@
         <toolitem action="Open_CSV"/>
         <separator />
         <toolitem action="Save_CSV"/>
+        <toolitem action="Save_PDF"/>
 
 
     </toolbar>

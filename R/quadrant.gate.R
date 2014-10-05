@@ -10,48 +10,53 @@ quadrant.gate=function(action, window){
     ##--------------------------------------------------------------------------
     ## mouse events
 
-    xWindow=X11()
+    #xWindow=X11()
+    x11()
     flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
     
     ## define the event handlers
     mousedown=function(buttons,x,y){
-
-        flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
         
-        user.x=grconvertX(x,from="ndc",to="user")
-        user.y=grconvertY(y,from="ndc",to="user")
+        if(length(buttons)==2) "Done"
+        else {
+            flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
+            
+            user.x=grconvertX(x,from="ndc",to="user")
+            user.y=grconvertY(y,from="ndc",to="user")
+            
+            ## output x,y
+            appspace[user.x]=user.x
+            appspace[user.y]=user.y
+            
+            # draw guid lines
+            abline(v=user.x,col="red")
+            abline(h=user.y,col="red")
+            
+            ## if want to implement click outside plot stop sampling
+            ## use a list to collect all user selections
+            ## ouput the second last
+            
+            cat("user.x=",appspace[user.x],"\t")
+            cat("user.y=",appspace[user.y],"\n")
+            NULL
+        }
         
-        ## output x,y
-        appspace[user.x]=user.x
-        appspace[user.y]=user.y
-        
-        # draw guid lines
-        abline(v=user.x,col="red")
-        abline(h=user.y,col="red")
-        
-        ## if want to implement click outside plot stop sampling
-        ## use a list to collect all user selections
-        ## ouput the second last
-        
-        cat("user.x=",appspace[user.x],"\t")
-        cat("user.y=",appspace[user.y],"\n")
-        NULL
     }
     
-    keybd <- function(key) {
-        cat("Key <", key, ">\n", sep = "")
-        #if (key=="ctrl-Q") "Done"
-        
-        #if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
-        if (key=="ctrl-S") {
-            save_PDF(window=xWindow)
-            "Done"
-        }   
-    }
+#     keybd <- function(key) {
+#         cat("Key <", key, ">\n", sep = "")
+#         #if (key=="ctrl-Q") "Done"
+#         
+#         #if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
+#         if (key=="ctrl-S") {
+#             Save_PDF(window=xWindow)
+#             "Done"
+#         }   
+#     }
 
     getGraphicsEvent("Click mouse to draw quadrant gate \nClick OK button to finish",
-                     onMouseDown=mousedown,
-                     onKeybd = keybd
+                     onMouseDown=mousedown
+#                      onKeybd = keybd
     )
 
     ##--------------------------------------------------------------------------

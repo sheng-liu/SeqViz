@@ -83,8 +83,9 @@ density.plot=function(action, window){
     ## use x11 only when there is no other choice, such as getGraphicEvents
     ## options(device="quartz") no need to set option, just plot 
     ## quartz(width=6,height=4)
-    options(device="quartz")  ## options makes the code uniform
+    #options(device="quartz")  ## options makes the code uniform
     dev.new(width=6,height=4)
+    # dev.new gives the device according to the operation system
     plot(eval(parse(text = f)))
     
 

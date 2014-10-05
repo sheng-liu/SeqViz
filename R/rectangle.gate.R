@@ -10,13 +10,20 @@ rectangle.gate=function(action,window){
     ##--------------------------------------------------------------------------
     ## mouse events
     
-    xWindow=X11()
-    
+    #xWindow=X11()
+    x11()
     flowPlot(x=appspace[active.seqFrame],
              plotParameters=c(appspace[channelX],appspace[channelY]))
     
     mousedown <- function(buttons, x, y) {
         
+        
+        
+        
+        if(length(buttons)==2) "Done"
+        else {
+            flowPlot(x=appspace[active.seqFrame],
+                     plotParameters=c(appspace[channelX],appspace[channelY]))
         x.cord=grconvertX(x,from="ndc",to="user")
         y.cord=grconvertY(y,from="ndc",to="user")
         
@@ -26,6 +33,7 @@ rectangle.gate=function(action,window){
         appspace[x.cord.ini]=x.cord
         appspace[y.cord.ini]=y.cord
         NULL
+        }
     }
     
     mousemove=function(buttons,x,y){
@@ -50,21 +58,22 @@ rectangle.gate=function(action,window){
         
     }
     
-    keybd <- function(key) {
-        cat("Key <", key, ">\n", sep = "")
-        # if (key=="ctrl-Q") "Done"
-        
-        # if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
-        if (key=="ctrl-S") {
-            save_PDF(window=xWindow)
-            "Done"
-        }  
-    }
+#     keybd <- function(key) {
+#         cat("Key <", key, ">\n", sep = "")
+#         # if (key=="ctrl-Q") "Done"
+#         
+#         # if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
+#         if (key=="ctrl-S") {
+#             Save_PDF(window=xWindow)
+#             "Done"
+#         }  
+#     }
     
     getGraphicsEvent("Click and drag to draw rectangeGate",
                      onMouseDown = mousedown,
-                     onMouseMove = mousemove,
-                     onKeybd = keybd) 
+                     onMouseMove = mousemove
+                     #onKeybd = keybd
+                     ) 
     
     ##--------------------------------------------------------------------------
     ## data    
