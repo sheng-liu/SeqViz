@@ -8,6 +8,10 @@
 scatter.plot=function(action,window){
     print("scatter plot")
     
+    # update selected.node and active.seqFrame
+    # selected.node()
+    # there is always an active.seqFrame created in appspace when data loaded in
+    
     select.channels()
     
     # flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
@@ -23,20 +27,37 @@ scatter.plot=function(action,window){
     ## kind of like a stacked 
     ## make the flowSet
     
-    model=appspace[active.view]$getModel()
+    # model=appspace[active.view]$getModel()
     
     # select node's parent node and form a flowSet
     selected.node=selected.node(appspace[active.view])
     all.child.node=select.all.child.node(appspace[active.view],itself=T)
     parent.node=select.parent.node(appspace[active.view],itself=F)
     
-    parent.frames=lapply(parent.node,function(node.name){
-        get(x=node.name,envir=.AppEnv)
-    })
+    #     parent.frames=lapply(parent.node,function(node.name){
+    #         # get(x=node.name,envir=.AppEnv)
+    # })
+ 
     
-    child.frames=lapply(all.child.node,function(node.name){
-        get(x=node.name,envir=.AppEnv)
+    parent.frames=lapply(parent.node,function(parent.node.name){
+        seqFrame.list=appspace[seqFrame.list]
+        parent.seqFrame=seqFrame.list[
+            names(seqFrame.list)==parent.node.name][[parent.node.name]]
+        return(parent.seqFrame)
     })
+     
+#     child.frames=lapply(all.child.node,function(node.name){
+#         get(x=node.name,envir=.AppEnv)
+#     })
+    
+    child.frames=lapply(all.child.node,function(child.node.name){
+        seqFrame.list=appspace[seqFrame.list]
+        child.seqFrame=seqFrame.list[
+            names(seqFrame.list)==child.node.name][[child.node.name]]
+        return(child.seqFrame)
+    })  
+    
+    
     
     frames=c(child.frames,parent.frames)
     
@@ -54,7 +75,7 @@ scatter.plot=function(action,window){
     dat=fs
     
     #dat=appspace[active.seqFrame]
-   
+    
     x=appspace[channelX]
     y=appspace[channelY]
     f=sprintf("xyplot(`%s`~`%s`,data =dat,smooth=F,outline=T )",y,x)

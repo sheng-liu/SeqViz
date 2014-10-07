@@ -18,7 +18,8 @@ polygon.gate=function(action,window) {
     X11()
     options(locatorBell = FALSE)
     
-    flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
+    flowPlot(x=appspace[active.seqFrame],
+             plotParameters=c(appspace[channelX],appspace[channelY]))
     
     # gate
     location <- locator(n =512, type = "o")
@@ -77,12 +78,10 @@ polygon.gate=function(action,window) {
     sapply(seq_along(child.node.name),function(i){
         assign(child.node.name[i],value=appspace[polygonGate.split][[i]],envir=.AppEnv) })
     
-    insert.node(node.name=child.node.name,parent=appspace[active.view],loc="insert")
-    
-   
-    ## adjust save_csv to be dynamic to selected.node
-    selected.node=selected.node(appspace[active.view])
-    appspace[save_csv]=get(selected.node,envir=.AppEnv)
+
+    insert.node(
+        node.name=child.node.name,tree.view=appspace[active.view],method="insert")
+
     
     
 

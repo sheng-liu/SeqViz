@@ -37,6 +37,35 @@ setClass(Class="seqFrame",
 # }
 
 
+# > getClass("flowFrame")
+# Class "flowFrame" [package "flowCore"]
+# Slots:
+# Name:               exprs         parameters        description
+# Class:       NcdfOrMatrix AnnotatedDataFrame               list
+
+
+# setClass(Class="seqFrame",
+#          contains="flowFrame",
+#          representation(featureAnnotation="data.frame")) 
+# change the sequence won't change the sequence slot printed out
+
+
+# setClass(Class="seqFrame",
+#          contains="flowFrame",
+#          representation(annotation="data.frame")) 
+
+# data.frame is better in this case, as it is easier to manipulate and display, althought they are essentially the same. 
+# when construct, user has to pass in the annotation they want to look at, it may not be the same as the parameters were calculated, such as promoter for histone coverage, while exon counts for the same gene's expression. as long as they are corresponding, they are good. 
+
+# > getClass("seqFrame")
+# Class "seqFrame" [in ".GlobalEnv"]
+# Slots: 
+# Name:     annotation      exprs           parameters              description
+# Class:    data.frame      NcdfOrMatrix    AnnotatedDataFrame      list                        
+# Extends: "flowFrame"
+
+# since I haven't decide whether and what to do with annotation, just use what's working now featureAnnotation
+
 
 
 veggie=function(){

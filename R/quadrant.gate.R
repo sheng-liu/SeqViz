@@ -5,21 +5,26 @@ quadrant.gate=function(action, window){
     
     print("Quadrant Gate")
     
+    # update selected.node and active.seqFrame
+    # selected.node(appspace[active.view])
+    
     select.channels()
     
     ##--------------------------------------------------------------------------
     ## mouse events
-
+    
     #xWindow=X11()
     x11()
-    flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
+    flowPlot(x=appspace[active.seqFrame],
+             plotParameters=c(appspace[channelX],appspace[channelY]))
     
     ## define the event handlers
     mousedown=function(buttons,x,y){
         
         if(length(buttons)==2) "Done"
         else {
-            flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
+            flowPlot(x=appspace[active.seqFrame],
+                     plotParameters=c(appspace[channelX],appspace[channelY]))
             
             user.x=grconvertX(x,from="ndc",to="user")
             user.y=grconvertY(y,from="ndc",to="user")
@@ -43,22 +48,12 @@ quadrant.gate=function(action, window){
         
     }
     
-#     keybd <- function(key) {
-#         cat("Key <", key, ">\n", sep = "")
-#         #if (key=="ctrl-Q") "Done"
-#         
-#         #if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
-#         if (key=="ctrl-S") {
-#             Save_PDF(window=xWindow)
-#             "Done"
-#         }   
-#     }
-
-    getGraphicsEvent("Click mouse to draw quadrant gate \nClick OK button to finish",
-                     onMouseDown=mousedown
-#                      onKeybd = keybd
+    
+    getGraphicsEvent(
+        "Click mouse to draw quadrant gate \nClick OK button to finish",
+        onMouseDown=mousedown
     )
-
+    
     ##--------------------------------------------------------------------------
     ## data   
     
@@ -70,31 +65,44 @@ quadrant.gate=function(action, window){
     quadGate=quadGate(.gate=param,filterId="quadGate")
     quadGate.filter=filter(appspace[active.seqFrame],quadGate)
     
-
+    
     ## filter box need to be a list, to store all filter in it.
     ## then how does one distinguish the first quad gate vs the last?
     appspace[filterBox]=quadGate.filter
     
     print(summary(quadGate.filter))
     
-    appspace[quadGate.split]=split(appspace[active.seqFrame],quadGate)
-    
-    child.node.name=sapply(appspace[quadGate.split],function(frames){
-        keyword(frames)$GUID  
-    })
+    # no need to put quadGate.split into appspace, just put them into seqFrame.list
+    #appspace[quadGate.split]=split(appspace[active.seqFrame],quadGate)
+    quadGate.split=split(appspace[active.seqFrame],quadGate)
     
     ## add the veggi name for now
-    for (i in 1:length(child.node.name)) keyword(appspace[quadGate.split][[i]])$VEGGI.NAME=child.node.name[i]
+    child.node.name=sapply(quadGate.split,function(frames){keyword(frames)$GUID})
+    
+   
+#     for (i in 1:length(child.node.name)) 
+#         keyword(appspace[quadGate.split][[i]])$VEGGI.NAME=child.node.name[i]
+    
+    for (i in 1:length(child.node.name)) 
+        keyword(quadGate.split[[i]])$VEGGI.NAME=child.node.name[i]
     
     #sapply(appspace[quadGate.split],keyword,"VEGGI.NAME")
-    sapply(seq_along(child.node.name),function(i){
-        assign(child.node.name[i],value=appspace[quadGate.split][[i]],envir=.AppEnv) })
     
-    insert.node(node.name=child.node.name,parent=appspace[active.view],loc="insert")
-     
-    ## adjust save_csv to be dynamic to selected.node
-    selected.node=selected.node(appspace[active.view])
-    appspace[save_csv]=get(selected.node,envir=.AppEnv)
+    # assign all variables to appspace
+#     sapply(seq_along(child.node.name),function(i){
+#         assign(child.node.name[i],
+#                value=appspace[quadGate.split][[i]],envir=.AppEnv) })
+    
+    # put result seqframes into seqFrame.list
+    sapply(seq_along(child.node.name),function(i){
+        appspace[seqFrame.list][[child.node.name[i]]]=quadGate.split[[i]]})
+    
+    
+    
+    
+    insert.node(
+        node.name=child.node.name,tree.view=appspace[active.view],method="insert")
+    
     
 }
 
@@ -114,3 +122,18 @@ quadrant.gate=function(action, window){
 #     win$setDefaultSize(400,400)
 #     win$setTitle(title="quadrantGate")
 #     win$showAll()
+
+
+## keybord save
+#  onKeybd = keybd
+
+#     keybd <- function(key) {
+#         cat("Key <", key, ">\n", sep = "")
+#         #if (key=="ctrl-Q") "Done"
+#         
+#         #if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
+#         if (key=="ctrl-S") {
+#             Save_PDF(window=xWindow)
+#             "Done"
+#         }   
+#     }

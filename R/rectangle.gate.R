@@ -106,11 +106,9 @@ rectangle.gate=function(action,window){
            function(i){
                assign(x=child.node.name[i],value=appspace[rectGate.split][[i]],envir=.AppEnv) })
     
-    insert.node(node.name=child.node.name,parent=appspace[active.view],loc="insert")
-    
-    ## adjust save_csv to be dynamic to selected.node
-    selected.node=selected.node(appspace[active.view])
-    appspace[save_csv]=get(selected.node,envir=.AppEnv)
+
+    insert.node(
+        node.name=child.node.name,tree.view=appspace[active.view],method="insert")
     
 }
 

@@ -12,24 +12,24 @@ density.plot=function(action, window){
     # put it anywhere in namespace won't work
     
     print("densityplot")
-
+    
     ## form data
     # lets first implement the flowViz version, as it is easy to add up checked channels
     # make it easier for now, always plot the parent, latter can add a button to switch
     # make the flowSet
     model=appspace[active.view]$getModel()
-   
-#     # select node's parent node and form a flowSet
-#     selected.node=selected.node(appspace[active.view])
-#     parent.node=select.ajacent.node(appspace[active.view],up=T)
-#     
-#     # data=list(appspace[selected.node],appspace[parent.node])
-#     child=get(x=selected.node,envir=.AppEnv)
-#     parent=get(x=parent.node,envir=.AppEnv)
-#     
-#     frames=list(child,parent)
-#     names(frames)=sapply(frames, keyword, "GUID")
-#     fs=as(frames,"flowSet")
+    
+    #     # select node's parent node and form a flowSet
+    #     selected.node=selected.node(appspace[active.view])
+    #     parent.node=select.ajacent.node(appspace[active.view],up=T)
+    #     
+    #     # data=list(appspace[selected.node],appspace[parent.node])
+    #     child=get(x=selected.node,envir=.AppEnv)
+    #     parent=get(x=parent.node,envir=.AppEnv)
+    #     
+    #     frames=list(child,parent)
+    #     names(frames)=sapply(frames, keyword, "GUID")
+    #     fs=as(frames,"flowSet")
     
     
     ## try use select.all.child.node to construct fs
@@ -39,15 +39,29 @@ density.plot=function(action, window){
     
     # data=list(appspace[selected.node],appspace[parent.node])
     #parent.frame=get(x=parent.node,envir=.AppEnv)
-
-    parent.frames=lapply(parent.node,function(node.name){
-        get(x=node.name,envir=.AppEnv)
-    })
-
-    child.frames=lapply(all.child.node,function(node.name){
-        get(x=node.name,envir=.AppEnv)
+    
+#     parent.frames=lapply(parent.node,function(node.name){
+#         get(x=node.name,envir=.AppEnv)
+#     })
+#     
+#     child.frames=lapply(all.child.node,function(node.name){
+#         get(x=node.name,envir=.AppEnv)
+#     })
+#     
+    
+    parent.frames=lapply(parent.node,function(parent.node.name){
+        seqFrame.list=appspace[seqFrame.list]
+        parent.seqFrame=seqFrame.list[
+            names(seqFrame.list)==parent.node.name][[parent.node.name]]
+        return(parent.seqFrame)
     })
     
+    child.frames=lapply(all.child.node,function(child.node.name){
+        seqFrame.list=appspace[seqFrame.list]
+        child.seqFrame=seqFrame.list[
+            names(seqFrame.list)==child.node.name][[child.node.name]]
+        return(child.seqFrame)
+    })  
     
     frames=c(child.frames,parent.frames)
     
@@ -56,10 +70,10 @@ density.plot=function(action, window){
     
     names(frames)=sapply(frames, keyword, "GUID")
     #names(frames)=sapply(frames, keyword, "VEGGI.NAME")
-
+    
     fs=as(frames,"flowSet")
     
-
+    
     
     # checkbox for selection of channels
     # defaul select all
@@ -88,7 +102,7 @@ density.plot=function(action, window){
     # dev.new gives the device according to the operation system
     plot(eval(parse(text = f)))
     
-
+    
 }
 
 

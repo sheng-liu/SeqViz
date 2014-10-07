@@ -170,3 +170,35 @@ update.table=function(df,table.view){
 #     gtkTreeViewRemoveColumn(view,x)})
 # 
 
+
+
+## populate PlotPage.table.view
+## change model does not change anything, until using mapply populated the view
+## so the operation is on view, and it is after fill in the column it will take effect
+
+
+#         appspace[PlotPage.table.model]=rGtkDataFrame(exprs(sf))
+#         appspace[PlotPage.table.view]<-gtkTreeView(appspace[PlotPage.table.model])
+#         
+#         mapply(appspace[PlotPage.table.view]$insertColumnWithAttributes,
+#                position=-1,
+#                title=colnames(appspace[PlotPage.table.model]),
+#                cell=list(gtkCellRendererText()),text=seq_len(ncol(appspace[PlotPage.table.model]))-1
+#         )
+# no way to change it through view, can display new easily        
+
+## populate PlotPage.table.view
+## simply change its underlining data frame through rGtkDataFrameSetFrame
+
+# PlotPage.table.view$setFrame(rGtkDataFrame(exprs(sf)))
+
+# replace frame
+#rGtkDataFrameSetFrame(appspace[PlotPage.table.model],frame=exprs(sf))
+#rGtkDataFrameSetFrame(PlotPage.table.model,frame=exprs(sf))
+
+# replace model
+#     df=exprs(sf)
+#     gtkDF=rGtkDataFrame(df)
+#PlotPage.table.view$setModel(gtkDF)
+#     appspace[active.table.view]$setModel(gtkDF)
+#     appspace[PlotPage.table.view]$setModel(gtkDF)

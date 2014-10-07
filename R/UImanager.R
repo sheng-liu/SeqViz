@@ -63,7 +63,9 @@ Clover=function(){
             data.name=basename(file)
             
             
-            insert.node(node.name=data.name,parent=DataPage.node.view)
+            insert.node(node.name=data.name,
+                        tree.view=PlotPage.node.view,
+                        method="append")
             
             
         }
@@ -88,7 +90,7 @@ Clover=function(){
             
             data.name=basename(file)
             
-            # insert.node(node.name=data.name,parent=DataPage.annotation.view)
+            
             
             
             
@@ -127,44 +129,57 @@ Clover=function(){
             
             keyword(sf)$VEGGI.NAME=data.name
             
-
+            # if it only have one node, create a list, 
+            # else add into the existing list
             
-            seqFrame.list=list()
-            seqFrame.list[[data.name]]=data.name
-            appspace[seqFrame.list]=seqFrame.list
+            #             on startup, (only) 4 views in appspace
+            #             csv.tree.view 
+            #             table.view
+            #             
+            #             bam.tree.view
+            #             text.view
             
-            # store it in the appspace, later it can be fetched by variable name 
-            # assign(x=data.name,value=appspace[seqFrame.list][[data.name]],envir=.AppEnv)
             
-
+            # if there is no seqFrame.list in appspace, create one, else append
+            # here using tree.view.length to determine
+            # can also by existence of seqFrame.list in appspace
+            # exists("seqFrame.list",envir=.AppEnv)
             
+            model=appspace[active.view]$getModel()
+            length.tree.view=model$iterNChildren()
+            if(length.tree.view==0){
+                appspace[seqFrame.list]=list()
+            }
+            
+            # set the name of the seqFrame.list
+            appspace[seqFrame.list][data.name]=data.name 
+            # fill in the content
+            appspace[seqFrame.list][[data.name]]=sf
+            
+            # set active.seqFrame to inserted seqFrame
+            cat("active.seqFrame set to inserted seqFrame ",data.name,"\n")
+            appspace[active.seqFrame]=sf
+              
             # active.seqFrame is decided here when new data inserted
             # later it is specified by select.node
             # set active.seqFrame to the newly loaded seqFrame
-            cat("active.seqFrame set to inserted seqFrame\n")
-            appspace[active.seqFrame]=sf
+            
             # althernatively can
             # use selected node to set the active seqFrame
-            # get select the displayed root node
+            # selected.node(appspace[active.view])
             
             
+
+                        
+            insert.node(node.name=data.name,
+                        tree.view=PlotPage.node.view,
+                        method="append")
             
-            # this assigns a variable called  "data.name" to .AppEnv
-            # appspace[data.name]=appspace[ ]
             
-            # set root rDataFrame the active.seqFrame
-            #             x=get(data.name,envir=.AppEnv)
-            #             show(x)
-            #             appspace[active.seqFrame]=get(data.name,envir=.AppEnv)
-            #             appspace[active.seqFrame]=x
-            #             show(appspace[active.seqFrame])
-            # moved to select.channnels
-            
-            insert.node(node.name=data.name,parent=PlotPage.node.view)
-            
-            #insert.node(node.name=data.name,tree.view=PlotPage.node.view,method="append")
-            
+            # update table.view to newly imported node
+            update.table(df=exprs(sf),table.view=appspace[active.table.view])
         }
+        
         #print(is.environment(.GlobalEnv))
         #print(environment())
         #print(parent.env(environment()))
@@ -187,7 +202,8 @@ Clover=function(){
         if(dialog$run()==GtkResponseType["accept"]){
             file.name=paste(dialog$getFilename(),".csv",sep="")
             cat("CSV file saved to ",file.name,"\n")
-            write.csv(file=file.name,exprs(appspace[save_csv]))
+            # save only active.seqFram
+            write.csv(file=file.name,exprs(appspace[active.seqFrame]),row.names=F)
             dialog$destroy()
         }
         
@@ -243,47 +259,27 @@ Clover=function(){
         sf=file2sf(file)
         data.name=basename(file)
         keyword(sf)$VEGGI.NAME=data.name
-                
-        seqFrame.list=list()
-        seqFrame.list[[data.name]]=data.name
-        appspace[seqFrame.list]=seqFrame.list
         
-        cat("active.seqFrame set to inserted seqFrame\n")
-        appspace[active.seqFrame]=sf        
-        insert.node(node.name=data.name,parent=PlotPage.node.view)
+        # if there is no seqFrame.list in appspace, create one, else append
+        if(!exists("seqFrame.list",envir=.AppEnv)){
+            appspace[seqFrame.list]=list()
+        }
         
+        # set the name of the seqFrame.list
+        appspace[seqFrame.list][data.name]=data.name 
+        # fill in the content
+        appspace[seqFrame.list][[data.name]]=sf
         
-        ## populate PlotPage.table.view
-        ## change model does not change anything, until using mapply populated the view
-        ## so the operation is on view, and it is after fill in the column it will take effect
+        # set active.seqFrame to inserted seqFrame
+        cat("active.seqFrame set to inserted seqFrame ",data.name,"\n")
+        appspace[active.seqFrame]=sf
         
+        # insert node
+        insert.node(node.name=data.name,
+                    tree.view=PlotPage.node.view,
+                    method="append")
         
-        #         appspace[PlotPage.table.model]=rGtkDataFrame(exprs(sf))
-        #         appspace[PlotPage.table.view]<-gtkTreeView(appspace[PlotPage.table.model])
-        #         
-        #         mapply(appspace[PlotPage.table.view]$insertColumnWithAttributes,
-        #                position=-1,
-        #                title=colnames(appspace[PlotPage.table.model]),
-        #                cell=list(gtkCellRendererText()),text=seq_len(ncol(appspace[PlotPage.table.model]))-1
-        #         )
-        # no way to change it through view, can display new easily        
-        
-        ## populate PlotPage.table.view
-        ## simply change its underlining data frame through rGtkDataFrameSetFrame
-        
-        # PlotPage.table.view$setFrame(rGtkDataFrame(exprs(sf)))
-        
-        # replace frame
-        #rGtkDataFrameSetFrame(appspace[PlotPage.table.model],frame=exprs(sf))
-        #rGtkDataFrameSetFrame(PlotPage.table.model,frame=exprs(sf))
-        
-        # replace model
-        #     df=exprs(sf)
-        #     gtkDF=rGtkDataFrame(df)
-        #PlotPage.table.view$setModel(gtkDF)
-        #     appspace[active.table.view]$setModel(gtkDF)
-        #     appspace[PlotPage.table.view]$setModel(gtkDF)
-        
+        # update table.view to newly imported node
         update.table(df=exprs(sf),table.view=appspace[active.table.view])
         
         gtkNotebookSetCurrentPage(notebook,page.num=1)
@@ -822,5 +818,8 @@ Clover=function(){
 
 
 
+# clear variables in the appspace
+# rm(list=ls(.AppEnv),envir=.AppEnv)
 
-
+# this assigns a variable called  "data.name" to .AppEnv
+# appspace[data.name]=appspace[ ]

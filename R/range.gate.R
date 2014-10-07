@@ -24,7 +24,10 @@ range.gate=function(action, window){
     
     model=appspace[active.view]$getModel()
     selected.node=selected.node(appspace[active.view])
-    selected.frame=get(x=selected.node,envir=.AppEnv)
+    
+    #selected.frame=get(x=selected.node,envir=.AppEnv)
+    selected.frame=appspace[active.seqFrame]
+        
     keyword(selected.frame,"GUID")
     dat=selected.frame
 
@@ -136,15 +139,14 @@ range.gate=function(action, window){
     sapply(seq_along(child.node.name),function(i){
         assign(child.node.name[i],value=appspace[rangeGate.split][[i]],envir=.AppEnv) })
     
-    insert.node(node.name=child.node.name,parent=appspace[active.view],loc="insert")
+    
+    insert.node(
+        node.name=child.node.name,tree.view=appspace[active.view],method="insert")
     
     # update infor 
     PlotPage.info.model <- rGtkDataFrame (exprs(appspace[active.seqFrame]))
     
     
-    ## adjust save_csv to be dynamic to selected.node
-    selected.node=selected.node(appspace[active.view])
-    appspace[save_csv]=get(selected.node,envir=.AppEnv)
     
     
     
