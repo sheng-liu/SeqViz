@@ -26,7 +26,7 @@ range.gate=function(action, window){
     selected.node=selected.node(appspace[active.view])
     
     #selected.frame=get(x=selected.node,envir=.AppEnv)
-    selected.frame=appspace[active.seqFrame]
+    selected.frame=appspace[active.SeqFrame]
     
     keyword(selected.frame,"GUID")
     dat=selected.frame
@@ -119,7 +119,7 @@ range.gate=function(action, window){
     colnames(param)=channels
     
     rangeGate=rectangleGate(.gate=param,filterID="rangeGate")
-    rangeGate.filter=filter(appspace[active.seqFrame],rangeGate)
+    rangeGate.filter=filter(appspace[active.SeqFrame],rangeGate)
     
     ## filter box need to be a list, to store all filter in it.
     ## then how does one distinguish the first quad gate vs the last?
@@ -127,7 +127,7 @@ range.gate=function(action, window){
     
     print(summary(rangeGate.filter))
     
-    rangeGate.split=split(appspace[active.seqFrame],rangeGate)
+    rangeGate.split=split(appspace[active.SeqFrame],rangeGate)
     child.node.name=sapply(rangeGate.split,function(frames){
         keyword(frames)$GUID  
     })
@@ -135,16 +135,16 @@ range.gate=function(action, window){
     ## add the veggi name for now
     for (i in 1:length(child.node.name)) keyword(rangeGate.split[[i]])$VEGGI.NAME=child.node.name[i]
 
-    # put result seqframes into seqFrame.list
+    # put result seqframes into SeqFrame.list
     sapply(seq_along(child.node.name),function(i){
-        appspace[seqFrame.list][[child.node.name[i]]]=rangeGate.split[[i]]})
+        appspace[SeqFrame.list][[child.node.name[i]]]=rangeGate.split[[i]]})
     
     # insert child.node.name
     insert.node(
         node.name=child.node.name,tree.view=appspace[active.view],method="insert")
     
     # update infor 
-    PlotPage.info.model <- rGtkDataFrame (exprs(appspace[active.seqFrame]))
+    PlotPage.info.model <- rGtkDataFrame (exprs(appspace[active.SeqFrame]))
     
     
     

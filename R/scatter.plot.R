@@ -8,13 +8,13 @@
 scatter.plot=function(action,window){
     print("scatter plot")
     
-    # update selected.node and active.seqFrame
+    # update selected.node and active.SeqFrame
     # selected.node()
-    # there is always an active.seqFrame created in appspace when data loaded in
+    # there is always an active.SeqFrame created in appspace when data loaded in
     
     select.channels()
     
-    # flowPlot(x=appspace[active.seqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
+    # flowPlot(x=appspace[active.SeqFrame],plotParameters=c(appspace[channelX],appspace[channelY]))
     # this doens't use the range parameter so only this works without proper annotation, lucky to use this one first
     
     # this also works, it is only for flowframe, doesn't have color when smooth=F
@@ -37,26 +37,26 @@ scatter.plot=function(action,window){
     #     parent.frames=lapply(parent.node,function(node.name){
     #         # get(x=node.name,envir=.AppEnv)
     # })
- 
+    
     
     parent.frames=lapply(parent.node,function(parent.node.name){
-        seqFrame.list=appspace[seqFrame.list]
-        parent.seqFrame=seqFrame.list[
-            names(seqFrame.list)==parent.node.name][[parent.node.name]]
-        return(parent.seqFrame)
+        SeqFrame.list=appspace[SeqFrame.list]
+        parent.SeqFrame=SeqFrame.list[
+            names(SeqFrame.list)==parent.node.name][[parent.node.name]]
+        return(parent.SeqFrame)
     })
     
     
     
-#     child.frames=lapply(all.child.node,function(node.name){
-#         get(x=node.name,envir=.AppEnv)
-#     })
+    #     child.frames=lapply(all.child.node,function(node.name){
+    #         get(x=node.name,envir=.AppEnv)
+    #     })
     
     child.frames=lapply(all.child.node,function(child.node.name){
-        seqFrame.list=appspace[seqFrame.list]
-        child.seqFrame=seqFrame.list[
-            names(seqFrame.list)==child.node.name][[child.node.name]]
-        return(child.seqFrame)
+        SeqFrame.list=appspace[SeqFrame.list]
+        child.SeqFrame=SeqFrame.list[
+            names(SeqFrame.list)==child.node.name][[child.node.name]]
+        return(child.SeqFrame)
     })  
     
     
@@ -64,6 +64,10 @@ scatter.plot=function(action,window){
     frames=c(child.frames,parent.frames)
     
     names(frames)=sapply(frames, keyword, "GUID")
+    
+    # keyword(object, keyword)
+    # passing in two variables to sapply
+    # sapply(frames, keyword)
     
     ## change name into veggi name, it is GUID is too long to catch fast
     #names(frames)=sapply(frames, keyword, "VEGGI.NAME")
@@ -76,7 +80,7 @@ scatter.plot=function(action,window){
     
     dat=fs
     
-    #dat=appspace[active.seqFrame]
+    #dat=appspace[active.SeqFrame]
     
     x=appspace[channelX]
     y=appspace[channelY]

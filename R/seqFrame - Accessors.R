@@ -1,4 +1,4 @@
-# seqFrame - Accessors
+# SeqFrame - Accessors
 # 
 # 
 ###############################################################################
@@ -25,14 +25,14 @@ setGeneric(
 
 setReplaceMethod(
     f="annotation",
-    signature="seqFrame",
+    signature="SeqFrame",
     definition=function(obj,value){
         initialize(obj,annotation=value)    
     })
 
 setMethod(
     f="annotation",
-    signature="seqFrame",
+    signature="SeqFrame",
     definition=function(obj){
         obj@annotation
     })

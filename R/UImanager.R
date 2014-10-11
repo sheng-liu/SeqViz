@@ -12,7 +12,7 @@
 ##' @export Clover
 Clover=function(){
     
-    # initialize active.seqFrame
+    # initialize active.SeqFrame
     #file=system.file("extdata", "Initialize.csv",package = "Clover")
     #sf=file2sf(file)
     
@@ -20,7 +20,7 @@ Clover=function(){
     #keyword(sf)$VEGGI.NAME=data.name
     #assign(x=data.name,value=sf,envir=.AppEnv)
     
-    #appspace[active.seqFrame]=sf      
+    #appspace[active.SeqFrame]=sf      
     
     #df=read.csv(file=file,header=T,as.is=T)
     #appspace[PlotPage.table.model]=rGtkDataFrame(df)
@@ -135,32 +135,32 @@ Clover=function(){
             #             text.view
             
             
-            # if there is no seqFrame.list in appspace, create one, else append
+            # if there is no SeqFrame.list in appspace, create one, else append
             # here using tree.view.length to determine
-            # can also by existence of seqFrame.list in appspace
-            # exists("seqFrame.list",envir=.AppEnv)
+            # can also by existence of SeqFrame.list in appspace
+            # exists("SeqFrame.list",envir=.AppEnv)
             
             model=appspace[active.view]$getModel()
             length.tree.view=model$iterNChildren()
             if(length.tree.view==0){
-                appspace[seqFrame.list]=list()
+                appspace[SeqFrame.list]=list()
             }
             
-            # set the name of the seqFrame.list
-            appspace[seqFrame.list][data.name]=data.name 
+            # set the name of the SeqFrame.list
+            appspace[SeqFrame.list][data.name]=data.name 
             # fill in the content
-            appspace[seqFrame.list][[data.name]]=sf
+            appspace[SeqFrame.list][[data.name]]=sf
             
-            # set active.seqFrame to inserted seqFrame
-            cat("active.seqFrame set to inserted seqFrame ",data.name,"\n")
-            appspace[active.seqFrame]=sf
+            # set active.SeqFrame to inserted SeqFrame
+            cat("active.SeqFrame set to inserted SeqFrame ",data.name,"\n")
+            appspace[active.SeqFrame]=sf
               
-            # active.seqFrame is decided here when new data inserted
+            # active.SeqFrame is decided here when new data inserted
             # later it is specified by select.node
-            # set active.seqFrame to the newly loaded seqFrame
+            # set active.SeqFrame to the newly loaded SeqFrame
             
             # althernatively can
-            # use selected node to set the active seqFrame
+            # use selected node to set the active SeqFrame
             # selected.node(appspace[active.view])
             
             
@@ -198,7 +198,7 @@ Clover=function(){
             file.name=paste(dialog$getFilename(),".csv",sep="")
             cat("CSV file saved to ",file.name,"\n")
             # save only active.seqFram
-            write.csv(file=file.name,exprs(appspace[active.seqFrame]),row.names=F)
+            write.csv(file=file.name,exprs(appspace[active.SeqFrame]),row.names=F)
             dialog$destroy()
         }
         
@@ -256,19 +256,19 @@ Clover=function(){
         data.name=basename(file)
         keyword(sf)$VEGGI.NAME=data.name
         
-        # if there is no seqFrame.list in appspace, create one, else append
-        if(!exists("seqFrame.list",envir=.AppEnv)){
-            appspace[seqFrame.list]=list()
+        # if there is no SeqFrame.list in appspace, create one, else append
+        if(!exists("SeqFrame.list",envir=.AppEnv)){
+            appspace[SeqFrame.list]=list()
         }
         
-        # set the name of the seqFrame.list
-        appspace[seqFrame.list][data.name]=data.name 
+        # set the name of the SeqFrame.list
+        appspace[SeqFrame.list][data.name]=data.name 
         # fill in the content
-        appspace[seqFrame.list][[data.name]]=sf
+        appspace[SeqFrame.list][[data.name]]=sf
         
-        # set active.seqFrame to inserted seqFrame
-        cat("active.seqFrame set to inserted seqFrame ",data.name,"\n")
-        appspace[active.seqFrame]=sf
+        # set active.SeqFrame to inserted SeqFrame
+        cat("active.SeqFrame set to inserted SeqFrame ",data.name,"\n")
+        appspace[active.SeqFrame]=sf
         
         # insert node
         insert.node(node.name=data.name,
@@ -591,7 +591,7 @@ Clover=function(){
     
     #appspace[PlotPage.table.model]=rGtkDataFrame(df)
     
-    #PlotPage.table.model <- rGtkDataFrame (exprs(appspace[active.seqFrame]))
+    #PlotPage.table.model <- rGtkDataFrame (exprs(appspace[active.SeqFrame]))
     
     # Displaying data as a list or table
     #PlotPage.table.view<-gtkTreeView(appspace[PlotPage.table.model])

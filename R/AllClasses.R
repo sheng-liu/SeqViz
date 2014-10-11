@@ -31,13 +31,13 @@ library(lattice)
 # could not find function "AnnotatedDataFrame"
 
 ## -----------------------------------------------------------------------------
-## Class seqFrame
+## Class SeqFrame
 
-# setClass(Class="seqFrame",
+# setClass(Class="SeqFrame",
 #          representation(annotation="data.frame"),
 #          contains="flowFrame") 
 
-# getClass("seqFrame")
+# getClass("SeqFrame")
 
 # guid <- function(len=10){
 #     ltrs <- c(LETTERS,letters)
@@ -52,21 +52,21 @@ library(lattice)
 # Class:       NcdfOrMatrix AnnotatedDataFrame               list
 
 
-# setClass(Class="seqFrame",
+# setClass(Class="SeqFrame",
 #          contains="flowFrame",
 #          representation(annotation="data.frame")) 
 # change the sequence won't change the sequence slot printed out
 
-##' @exportClass seqFrame
-setClass(Class="seqFrame",
+##' @exportClass SeqFrame
+setClass(Class="SeqFrame",
          contains="flowFrame",
          representation(annotation="data.frame")) 
 
 # data.frame is better in this case, as it is easier to manipulate and display, althought they are essentially the same. 
 # when construct, user has to pass in the annotation they want to look at, it may not be the same as the parameters were calculated, such as promoter for histone coverage, while exon counts for the same gene's expression. as long as they are corresponding, they are good. 
 
-# > getClass("seqFrame")
-# Class "seqFrame" [in ".GlobalEnv"]
+# > getClass("SeqFrame")
+# Class "SeqFrame" [in ".GlobalEnv"]
 # Slots: 
 # Name:     annotation      exprs           parameters              description
 # Class:    data.frame      NcdfOrMatrix    AnnotatedDataFrame      list                        
@@ -77,13 +77,13 @@ setClass(Class="seqFrame",
 
 
 
-# the seqFrame constructor 
-##' @export seqFrame
-seqFrame=function(exprs=matrix(),
+# the SeqFrame constructor 
+##' @export SeqFrame
+SeqFrame=function(exprs=matrix(),
                   parameters=AnnotatedDataFrame(),
                   description=list(),
                   annotation=data.frame()){
-    new("seqFrame",
+    new("SeqFrame",
         exprs=exprs,
         parameters=parameters,
         description=description,
@@ -94,21 +94,21 @@ seqFrame=function(exprs=matrix(),
 
 
 # setGeneric(
-#     name="seqFrame",
+#     name="SeqFrame",
 #     def=function(obj,bamFile=character(0)){
 #         standardGeneric("getReadCoverage")
 #     })
 
 
 # 
-# # a seqFrame constructor makes flowFrame to seqFrame with annotation information
+# # a SeqFrame constructor makes flowFrame to SeqFrame with annotation information
 
 # setMethod(
-#     f="seqFrame",
+#     f="SeqFrame",
 #     signature="flowFrame",
 #     definition=function(obj,annotation){
-#        # sf=seqFrame(exprs=exprs(obj),
-#         sf=new("seqFrame",
+#        # sf=SeqFrame(exprs=exprs(obj),
+#         sf=new("SeqFrame",
 #                exprs=exprs(obj),           
 #                parameters=parameters(obj),
 #                description=description(obj),
@@ -116,10 +116,10 @@ seqFrame=function(exprs=matrix(),
 #                     )
 #     })
 
-##' @export flowFrame2seqFrame
-flowFrame2seqFrame=function(ff,annotation){
-        # sf=seqFrame(exprs=exprs(ff),
-        sf=new("seqFrame",
+##' @export flowFrame2SeqFrame
+flowFrame2SeqFrame=function(ff,annotation){
+        # sf=SeqFrame(exprs=exprs(ff),
+        sf=new("SeqFrame",
                exprs=exprs(ff),           
                parameters=parameters(ff),
                description=description(ff),
@@ -130,16 +130,16 @@ flowFrame2seqFrame=function(ff,annotation){
 
 
 
-# it turn out the splited seqFrame remain seqFrame instead of flowFrame(even though the print method shows it as flowFrame)
+# it turn out the splited SeqFrame remain SeqFrame instead of flowFrame(even though the print method shows it as flowFrame)
 ## its annotation also gets inherited but not splited
 
 
 # setMethod(
-#     f="seqFrame",
-#     signature="seqFrame",
+#     f="SeqFrame",
+#     signature="SeqFrame",
 #     definition=function(obj,annotation){
-#         # sf=seqFrame(exprs=exprs(obj),
-#         sf=new("seqFrame",
+#         # sf=SeqFrame(exprs=exprs(obj),
+#         sf=new("SeqFrame",
 #                exprs=exprs(obj),           
 #                parameters=parameters(obj),
 #                description=description(obj),
@@ -152,8 +152,8 @@ flowFrame2seqFrame=function(ff,annotation){
 
 
 # function(sf,annotation){
-#         # sf=seqFrame(exprs=exprs(obj),
-#         sf=new("seqFrame",
+#         # sf=SeqFrame(exprs=exprs(obj),
+#         sf=new("SeqFrame",
 #                exprs=exprs(obj),           
 #                parameters=parameters(obj),
 #                description=description(obj),

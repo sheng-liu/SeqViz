@@ -18,7 +18,7 @@ polygon.gate=function(action,window) {
     X11(width=4,height=4)
     options(locatorBell = FALSE)
     
-    flowPlot(x=appspace[active.seqFrame],
+    flowPlot(x=appspace[active.SeqFrame],
              plotParameters=c(appspace[channelX],appspace[channelY]))
     
     # gate
@@ -50,14 +50,14 @@ polygon.gate=function(action,window) {
     
     polygonGate=polygonGate(.gate=location.df,filterId="polygonGate")
     
-    polygonGate.filter=filter(appspace[active.seqFrame],polygonGate)
+    polygonGate.filter=filter(appspace[active.SeqFrame],polygonGate)
     
     appspace[filterBox]=polygonGate.filter
     
     print(summary(polygonGate.filter))
     
     
-    polygonGate.split=split(appspace[active.seqFrame],polygonGate)
+    polygonGate.split=split(appspace[active.SeqFrame],polygonGate)
     
     
     #x=sapply(polygonGate.split,keyword,"GUID")
@@ -76,9 +76,9 @@ polygon.gate=function(action,window) {
     #     sapply(seq_along(child.node.name),function(i){
     #         assign(child.node.name[i],value=polygonGate.split[[i]],envir=.AppEnv) })
     
-    # put result seqframes into seqFrame.list
+    # put result seqframes into SeqFrame.list
     sapply(seq_along(child.node.name),function(i){
-        appspace[seqFrame.list][[child.node.name[i]]]=polygonGate.split[[i]]})
+        appspace[SeqFrame.list][[child.node.name[i]]]=polygonGate.split[[i]]})
     
     
     insert.node(

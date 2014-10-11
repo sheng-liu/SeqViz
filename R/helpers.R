@@ -70,7 +70,7 @@ df2sf=function(df,keyword=NULL){
     
     if(is.null(keyword)) keyword=list(FILENAME=data.name,GUID=data.name)
     
-    sf=new("seqFrame",
+    sf=new("SeqFrame",
            exprs=exprs.mx,
            parameters=parameters.adf,
            description=keyword,
@@ -126,8 +126,8 @@ veggie=function(){
 # }
 
 ##------------------------------------------------------------------------------
-##' @export seqFrame.table
-seqFrame.table=function(sf){
+##' @export SeqFrame.table
+SeqFrame.table=function(sf){
     merge(annotation(sf),exprs(sf),by="id") 
 }
 

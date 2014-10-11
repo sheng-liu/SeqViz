@@ -5,7 +5,7 @@ quadrant.gate=function(action, window){
     
     print("Quadrant Gate")
     
-    # update selected.node and active.seqFrame
+    # update selected.node and active.SeqFrame
     # selected.node(appspace[active.view])
     
     select.channels()
@@ -14,7 +14,7 @@ quadrant.gate=function(action, window){
     ## mouse events
     
     x11(width=4,height=4)
-    flowPlot(x=appspace[active.seqFrame],
+    flowPlot(x=appspace[active.SeqFrame],
              plotParameters=c(appspace[channelX],appspace[channelY]))
     
     ## define the event handlers
@@ -22,7 +22,7 @@ quadrant.gate=function(action, window){
         
         if(length(buttons)==2) "Done"
         else {
-            flowPlot(x=appspace[active.seqFrame],
+            flowPlot(x=appspace[active.SeqFrame],
                      plotParameters=c(appspace[channelX],appspace[channelY]))
             
             user.x=grconvertX(x,from="ndc",to="user")
@@ -60,7 +60,7 @@ quadrant.gate=function(action, window){
     param=c(appspace[user.x],appspace[user.y])
     
     quadGate=quadGate(.gate=param,filterId="quadGate")
-    quadGate.filter=filter(appspace[active.seqFrame],quadGate)
+    quadGate.filter=filter(appspace[active.SeqFrame],quadGate)
     
     ## filter box need to be a list, to store all filter in it.
     ## then how does one distinguish the first quad gate vs the last?
@@ -72,9 +72,9 @@ quadrant.gate=function(action, window){
     
     
     
-    # no need to put quadGate.split into appspace, just put them into seqFrame.list
-    #appspace[quadGate.split]=split(appspace[active.seqFrame],quadGate)
-    quadGate.split=split(appspace[active.seqFrame],quadGate)
+    # no need to put quadGate.split into appspace, just put them into SeqFrame.list
+    #appspace[quadGate.split]=split(appspace[active.SeqFrame],quadGate)
+    quadGate.split=split(appspace[active.SeqFrame],quadGate)
     
     ## add the veggi name for now
     child.node.name=sapply(quadGate.split,function(frames){keyword(frames)$GUID})
@@ -94,9 +94,9 @@ quadrant.gate=function(action, window){
 #                value=appspace[quadGate.split][[i]],envir=.AppEnv) })
     
     ############################################################################
-    # put result seqframes into seqFrame.list
+    # put result seqframes into SeqFrame.list
     sapply(seq_along(child.node.name),function(i){
-        appspace[seqFrame.list][[child.node.name[i]]]=quadGate.split[[i]]})
+        appspace[SeqFrame.list][[child.node.name[i]]]=quadGate.split[[i]]})
     ############################################################################
     
     

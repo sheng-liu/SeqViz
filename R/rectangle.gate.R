@@ -12,14 +12,14 @@ rectangle.gate=function(action,window){
     
     #xWindow=X11()
     x11(width=4,height=4)
-    flowPlot(x=appspace[active.seqFrame],
+    flowPlot(x=appspace[active.SeqFrame],
              plotParameters=c(appspace[channelX],appspace[channelY]))
     
     mousedown <- function(buttons, x, y) {
         
         if(length(buttons)==2) "Done"
         else {
-            flowPlot(x=appspace[active.seqFrame],
+            flowPlot(x=appspace[active.SeqFrame],
                      plotParameters=c(appspace[channelX],appspace[channelY]))
             x.cord=grconvertX(x,from="ndc",to="user")
             y.cord=grconvertY(y,from="ndc",to="user")
@@ -35,7 +35,7 @@ rectangle.gate=function(action,window){
     
     mousemove=function(buttons,x,y){
         
-        flowPlot(x=appspace[active.seqFrame],
+        flowPlot(x=appspace[active.SeqFrame],
                  plotParameters=c(appspace[channelX],appspace[channelY]))
         
         x.cord=grconvertX(x,from="ndc",to="user")
@@ -81,14 +81,14 @@ rectangle.gate=function(action,window){
     colnames(param)=c(appspace[channelX],appspace[channelY])
     
     rectGate=rectangleGate(.gate=param,filterID="rectangleGate")
-    rectGate.filter=filter(appspace[active.seqFrame],rectGate)
+    rectGate.filter=filter(appspace[active.SeqFrame],rectGate)
     
     # use a list is better
     appspace[filterBox]=rectGate.filter
     
     print(summary(rectGate.filter))
 
-    rectGate.split=split(appspace[active.seqFrame],rectGate)
+    rectGate.split=split(appspace[active.SeqFrame],rectGate)
     
 
 child.node.name=sapply(rectGate.split,
@@ -99,9 +99,9 @@ child.node.name=sapply(rectGate.split,
         keyword(rectGate.split[[i]])$VEGGI.NAME=child.node.name[i]
     
     
-    # put result seqframes into seqFrame.list
+    # put result seqframes into SeqFrame.list
     sapply(seq_along(child.node.name),function(i){
-        appspace[seqFrame.list][[child.node.name[i]]]=rectGate.split[[i]]})
+        appspace[SeqFrame.list][[child.node.name[i]]]=rectGate.split[[i]]})
     
     insert.node(
         node.name=child.node.name,tree.view=appspace[active.view],method="insert")

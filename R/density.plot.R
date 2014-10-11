@@ -50,17 +50,17 @@ density.plot=function(action, window){
 #     
     
     parent.frames=lapply(parent.node,function(parent.node.name){
-        seqFrame.list=appspace[seqFrame.list]
-        parent.seqFrame=seqFrame.list[
-            names(seqFrame.list)==parent.node.name][[parent.node.name]]
-        return(parent.seqFrame)
+        SeqFrame.list=appspace[SeqFrame.list]
+        parent.SeqFrame=SeqFrame.list[
+            names(SeqFrame.list)==parent.node.name][[parent.node.name]]
+        return(parent.SeqFrame)
     })
     
     child.frames=lapply(all.child.node,function(child.node.name){
-        seqFrame.list=appspace[seqFrame.list]
-        child.seqFrame=seqFrame.list[
-            names(seqFrame.list)==child.node.name][[child.node.name]]
-        return(child.seqFrame)
+        SeqFrame.list=appspace[SeqFrame.list]
+        child.SeqFrame=SeqFrame.list[
+            names(SeqFrame.list)==child.node.name][[child.node.name]]
+        return(child.SeqFrame)
     })  
     
     frames=c(child.frames,parent.frames)
@@ -86,7 +86,7 @@ density.plot=function(action, window){
     
     #selected.node(appspace[active.view])
     
-    # dat=appspace[active.seqFrame]
+    # dat=appspace[active.SeqFrame]
     dat=fs
     
     f=sprintf("densityplot(~`%s`,data =dat,margin=T)",channels)

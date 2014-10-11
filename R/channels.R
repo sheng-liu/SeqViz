@@ -49,28 +49,28 @@ select.channels=function(channelY=T){
         label="Select channels")
     
 
-    # determine active.seqFrame with selection by the user
+    # determine active.SeqFrame with selection by the user
     selected.node(appspace[active.view])
-    active.seqFrame=appspace[active.seqFrame]
+    active.SeqFrame=appspace[active.SeqFrame]
     
     #     selected.node=selected.node.name(appspace[active.view])
-    #     active.seqFrame=get(selected.node,envir=.AppEnv)
-    #     appspace[active.seqFrame]=active.seqFrame
+    #     active.SeqFrame=get(selected.node,envir=.AppEnv)
+    #     appspace[active.SeqFrame]=active.SeqFrame
     
-    # active.seqFrame=appspace[as.symbol(selected.node.name)]
+    # active.SeqFrame=appspace[as.symbol(selected.node.name)]
     # as.name  
     # Error in x[seq_len(n)] : object of type 'symbol' is not subsettable
     
     
     
     channelXcombo=gtkComboBoxNewText()
-    sapply(colnames(active.seqFrame), channelXcombo$appendText)
-    #channelXcombo$appendText(text=colnames(active.seqFrame()))  
+    sapply(colnames(active.SeqFrame), channelXcombo$appendText)
+    #channelXcombo$appendText(text=colnames(active.SeqFrame()))  
     
     
     channelYcombo=gtkComboBoxNewText()
-    sapply(colnames(active.seqFrame), channelYcombo$appendText)
-    #channelYcombo$appendText(text=colnames(active.seqFrame()))    
+    sapply(colnames(active.SeqFrame), channelYcombo$appendText)
+    #channelYcombo$appendText(text=colnames(active.SeqFrame()))    
     
     
     X.label=gtkLabel(str="X:")
@@ -132,25 +132,25 @@ check.channels=function(multiple=T){
         buttons="ok",
         label="Check channels")
     
-    # create checkButtons according to the channels of the seqFrame
+    # create checkButtons according to the channels of the SeqFrame
     # need to name the variable differently to access them
-    active.seqFrame=appspace[active.seqFrame]
+    active.SeqFrame=appspace[active.SeqFrame]
     
     #channels.list=list()
-    channels.list=vector("list",length(colnames(active.seqFrame)))
+    channels.list=vector("list",length(colnames(active.SeqFrame)))
     #do.call(lapply(channels.list),)
-    names(channels.list)=colnames(active.seqFrame)
+    names(channels.list)=colnames(active.SeqFrame)
     
     # multiple==T, use checkButton
     if (multiple==T){
-        for (i in 1:length(colnames(active.seqFrame))) {
-            channels.list[[i]]=gtkCheckButton(label=colnames(active.seqFrame)[i])
+        for (i in 1:length(colnames(active.SeqFrame))) {
+            channels.list[[i]]=gtkCheckButton(label=colnames(active.SeqFrame)[i])
         }
         
     }else{ 
         # multiple==F, use radio button
-        for (i in 1:length(colnames(active.seqFrame))) {
-            channels.list[[i]]=gtkRadioButton(label=colnames(active.seqFrame)[i])
+        for (i in 1:length(colnames(active.SeqFrame))) {
+            channels.list[[i]]=gtkRadioButton(label=colnames(active.SeqFrame)[i])
         }
         
         # put the channels into one group ( the first buttons group)
@@ -167,7 +167,7 @@ check.channels=function(multiple=T){
     vbox=gtkVBox()
     
     # could use for loop instead
-    sapply(seq_along(colnames(active.seqFrame)),
+    sapply(seq_along(colnames(active.SeqFrame)),
            function(i){vbox$packStart(child=channels.list[[i]])})
     
     checkChannelsDialog[["vbox"]]$add(vbox)
