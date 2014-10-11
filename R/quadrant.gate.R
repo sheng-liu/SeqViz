@@ -13,8 +13,7 @@ quadrant.gate=function(action, window){
     ##--------------------------------------------------------------------------
     ## mouse events
     
-    #xWindow=X11()
-    x11()
+    x11(width=4,height=4)
     flowPlot(x=appspace[active.seqFrame],
              plotParameters=c(appspace[channelX],appspace[channelY]))
     
@@ -44,10 +43,8 @@ quadrant.gate=function(action, window){
             cat("user.x=",appspace[user.x],"\t")
             cat("user.y=",appspace[user.y],"\n")
             NULL
-        }
-        
+        } 
     }
-    
     
     getGraphicsEvent(
         "Click mouse to draw quadrant gate \nClick OK button to finish",
@@ -60,17 +57,20 @@ quadrant.gate=function(action, window){
     names(appspace[user.x])=appspace[channelX]
     names(appspace[user.y])=appspace[channelY]
     
-    
     param=c(appspace[user.x],appspace[user.y])
+    
     quadGate=quadGate(.gate=param,filterId="quadGate")
     quadGate.filter=filter(appspace[active.seqFrame],quadGate)
-    
     
     ## filter box need to be a list, to store all filter in it.
     ## then how does one distinguish the first quad gate vs the last?
     appspace[filterBox]=quadGate.filter
     
     print(summary(quadGate.filter))
+    
+    
+    
+    
     
     # no need to put quadGate.split into appspace, just put them into seqFrame.list
     #appspace[quadGate.split]=split(appspace[active.seqFrame],quadGate)
@@ -93,11 +93,11 @@ quadrant.gate=function(action, window){
 #         assign(child.node.name[i],
 #                value=appspace[quadGate.split][[i]],envir=.AppEnv) })
     
+    ############################################################################
     # put result seqframes into seqFrame.list
     sapply(seq_along(child.node.name),function(i){
         appspace[seqFrame.list][[child.node.name[i]]]=quadGate.split[[i]]})
-    
-    
+    ############################################################################
     
     
     insert.node(

@@ -31,6 +31,7 @@
 
 #select.channels=function(window){
 
+##' @export select.channels
 select.channels=function(channelY=T){
     channelsDialog=gtkMessageDialog(
         #parent=window,
@@ -118,6 +119,7 @@ select.channels=function(channelY=T){
 
 ## check.channels, can choose multiple selecton or single
 ## this program is cool, simple and powerful, try it out, it is fun
+##' @export check.channels
 check.channels=function(multiple=T){
     
     ## present the dialog

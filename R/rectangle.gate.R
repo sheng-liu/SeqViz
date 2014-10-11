@@ -11,28 +11,25 @@ rectangle.gate=function(action,window){
     ## mouse events
     
     #xWindow=X11()
-    x11()
+    x11(width=4,height=4)
     flowPlot(x=appspace[active.seqFrame],
              plotParameters=c(appspace[channelX],appspace[channelY]))
     
     mousedown <- function(buttons, x, y) {
         
-        
-        
-        
         if(length(buttons)==2) "Done"
         else {
             flowPlot(x=appspace[active.seqFrame],
                      plotParameters=c(appspace[channelX],appspace[channelY]))
-        x.cord=grconvertX(x,from="ndc",to="user")
-        y.cord=grconvertY(y,from="ndc",to="user")
-        
-        #cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
-        #cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
-        
-        appspace[x.cord.ini]=x.cord
-        appspace[y.cord.ini]=y.cord
-        NULL
+            x.cord=grconvertX(x,from="ndc",to="user")
+            y.cord=grconvertY(y,from="ndc",to="user")
+            
+            #cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
+            #cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
+            
+            appspace[x.cord.ini]=x.cord
+            appspace[y.cord.ini]=y.cord
+            NULL
         }
     }
     
@@ -58,22 +55,22 @@ rectangle.gate=function(action,window){
         
     }
     
-#     keybd <- function(key) {
-#         cat("Key <", key, ">\n", sep = "")
-#         # if (key=="ctrl-Q") "Done"
-#         
-#         # if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
-#         if (key=="ctrl-S") {
-#             Save_PDF(window=xWindow)
-#             "Done"
-#         }  
-#     }
+    #     keybd <- function(key) {
+    #         cat("Key <", key, ">\n", sep = "")
+    #         # if (key=="ctrl-Q") "Done"
+    #         
+    #         # if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
+    #         if (key=="ctrl-S") {
+    #             Save_PDF(window=xWindow)
+    #             "Done"
+    #         }  
+    #     }
     
     getGraphicsEvent("Click and drag to draw rectangeGate",
                      onMouseDown = mousedown,
                      onMouseMove = mousemove
                      #onKeybd = keybd
-                     ) 
+    ) 
     
     ##--------------------------------------------------------------------------
     ## data    
@@ -90,23 +87,22 @@ rectangle.gate=function(action,window){
     appspace[filterBox]=rectGate.filter
     
     print(summary(rectGate.filter))
-    
-    
-    
-    appspace[rectGate.split]=split(appspace[active.seqFrame],rectGate)
-    
-    child.node.name=sapply(appspace[rectGate.split],
-                           function(frames){keyword(frames)$GUID})
-    
-    ## add the veggi name for now
-    for (i in 1:length(child.node.name)) 
-        keyword(appspace[rectGate.split][[i]])$VEGGI.NAME=child.node.name[i]
-    
-    sapply(seq_along(child.node.name),
-           function(i){
-               assign(x=child.node.name[i],value=appspace[rectGate.split][[i]],envir=.AppEnv) })
+
+    rectGate.split=split(appspace[active.seqFrame],rectGate)
     
 
+child.node.name=sapply(rectGate.split,
+                       function(frames){keyword(frames)$GUID})    
+
+    ## add the veggi name for now
+    for (i in 1:length(child.node.name)) 
+        keyword(rectGate.split[[i]])$VEGGI.NAME=child.node.name[i]
+    
+    
+    # put result seqframes into seqFrame.list
+    sapply(seq_along(child.node.name),function(i){
+        appspace[seqFrame.list][[child.node.name[i]]]=rectGate.split[[i]]})
+    
     insert.node(
         node.name=child.node.name,tree.view=appspace[active.view],method="insert")
     

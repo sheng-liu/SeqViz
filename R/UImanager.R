@@ -9,7 +9,7 @@
 ## add import UCSC tracks
 ## clickable to UCSC browser
 
-
+##' @export Clover
 Clover=function(){
     
     # initialize active.seqFrame
@@ -64,7 +64,7 @@ Clover=function(){
             
             
             insert.node(node.name=data.name,
-                        tree.view=PlotPage.node.view,
+                        tree.view=DataPage.node.view,
                         method="append")
             
             
@@ -86,17 +86,12 @@ Clover=function(){
             
             file=dialog$getFilename()
             appspace[annotationFile]=file
-            
-            
+
             data.name=basename(file)
-            
-            
-            
-            
-            
-            #data=getFeatureAnnotation(annotationFile=file)
-            #anno=featureAnnotation(data)
-            #appspace[featureAnnotation]=anno
+
+            #data=getannotation(annotationFile=file)
+            #anno=annotation(data)
+            #appspace[annotation]=anno
         }
         dialog$destroy()
         
@@ -109,7 +104,7 @@ Clover=function(){
             parent=window,
             action="open",
             # the names of variable are mapped above this line
-            button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
+            #button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
             button2_label="gtk-open", button2_response=GtkResponseType["accept"]) 
         
         if(dialog$run()==GtkResponseType["accept"]){
@@ -209,7 +204,8 @@ Clover=function(){
         
     }
     
-    # note this only saves the current active window which is show at the top of the x11 window
+    # note this only saves the current active window which is show at the top of
+    # the x11 window
     Save_PDF=function(widget, window) {
         dialog<-gtkFileChooserDialog(
             title="Enter a name for the file",
@@ -558,10 +554,10 @@ Clover=function(){
         rectangle.gate.button, left.attach = 1,2, top.attach = 1,2)
     
     gate.button.table$attach(
-        range.gate.button, left.attach = 2,3, top.attach = 1,2)
+        polygon.gate.button, left.attach = 2,3, top.attach = 1,2)
     
     gate.button.table$attach(
-        polygon.gate.button, left.attach = 0,1, top.attach = 2,3)
+        range.gate.button, left.attach = 0,1, top.attach = 2,3)
     
     
     #gate.button.table$attach(norm2.gate.button, left.attach = 1,2, top.attach = 2,3)

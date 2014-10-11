@@ -45,7 +45,9 @@ scatter.plot=function(action,window){
             names(seqFrame.list)==parent.node.name][[parent.node.name]]
         return(parent.seqFrame)
     })
-     
+    
+    
+    
 #     child.frames=lapply(all.child.node,function(node.name){
 #         get(x=node.name,envir=.AppEnv)
 #     })

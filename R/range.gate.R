@@ -16,7 +16,7 @@ range.gate=function(action, window){
     
     
     
-
+    
     ##--------------------------------------------------------------------------
     ## data  for mouse event
     
@@ -27,13 +27,13 @@ range.gate=function(action, window){
     
     #selected.frame=get(x=selected.node,envir=.AppEnv)
     selected.frame=appspace[active.seqFrame]
-        
+    
     keyword(selected.frame,"GUID")
     dat=selected.frame
-
+    
     channels=paste(checked.channels.name,collapse="`+`")
     
-
+    
     df=data.frame(exprs(dat))
     
     f=sprintf("plot(density(x=df[,'%s']),col='red',main='',xlab='%s')",channels,channels)
@@ -45,7 +45,7 @@ range.gate=function(action, window){
     ## mouse events   
     
     #xWindow=X11()
-    X11()
+    X11(width=4,height=4)
     plot.new()
     # this plot.new is required as plot(eval(parse(text = f))) 
     # is not recoginized as a plot when put inside mouse event handlers
@@ -107,13 +107,13 @@ range.gate=function(action, window){
                      #                      onKeybd = keybd
     ) 
     
-
-
-
-
+    
+    
+    
+    
     ##--------------------------------------------------------------------------
     ## data 
-
+    
     # use matrix as input, can also use list
     param=cbind(c(appspace[x.cord.ini],appspace[x.cord.end]))
     colnames(param)=channels
@@ -127,19 +127,19 @@ range.gate=function(action, window){
     
     print(summary(rangeGate.filter))
     
-    appspace[rangeGate.split]=split(appspace[active.seqFrame],rangeGate)
-    
-    child.node.name=sapply(appspace[rangeGate.split],function(frames){
+    rangeGate.split=split(appspace[active.seqFrame],rangeGate)
+    child.node.name=sapply(rangeGate.split,function(frames){
         keyword(frames)$GUID  
     })
     
     ## add the veggi name for now
-    for (i in 1:length(child.node.name)) keyword(appspace[rangeGate.split][[i]])$VEGGI.NAME=child.node.name[i]
-    
+    for (i in 1:length(child.node.name)) keyword(rangeGate.split[[i]])$VEGGI.NAME=child.node.name[i]
+
+    # put result seqframes into seqFrame.list
     sapply(seq_along(child.node.name),function(i){
-        assign(child.node.name[i],value=appspace[rangeGate.split][[i]],envir=.AppEnv) })
+        appspace[seqFrame.list][[child.node.name[i]]]=rangeGate.split[[i]]})
     
-    
+    # insert child.node.name
     insert.node(
         node.name=child.node.name,tree.view=appspace[active.view],method="insert")
     

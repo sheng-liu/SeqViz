@@ -2,12 +2,12 @@
 
 
 polygon.gate=function(action,window) {    
-
+    
     
     print("Polygon gate")
     
     select.channels()
- 
+    
     
     ##--------------------------------------------------------------------------
     ## use locator replace mouse events   
@@ -15,7 +15,7 @@ polygon.gate=function(action,window) {
     ## X11() way of implementation
     
     #xWindow=X11()
-    X11()
+    X11(width=4,height=4)
     options(locatorBell = FALSE)
     
     flowPlot(x=appspace[active.seqFrame],
@@ -25,25 +25,23 @@ polygon.gate=function(action,window) {
     location <- locator(n =512, type = "o")
     location.df=data.frame(location$x,location$y)
     
-
+    
     # if use quartz() would have saved this 
-#     keybd <- function(key) {
-#         cat("Key <", key, ">\n", sep = "")
-#         #if (key=="ctrl-Q") "Done"
-#         
-#         #if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
-#         if (key=="ctrl-S") {
-#             save_PDF(window=xWindow)
-#             "Done"
-#         }   
-#     }
-#     getGraphicsEvent("ctrl-S to save",onKeybd = keybd)
-#     
+    #     keybd <- function(key) {
+    #         cat("Key <", key, ">\n", sep = "")
+    #         #if (key=="ctrl-Q") "Done"
+    #         
+    #         #if (key=="ctrl-S") dev.copy2pdf(file = "table.2.pdf")
+    #         if (key=="ctrl-S") {
+    #             save_PDF(window=xWindow)
+    #             "Done"
+    #         }   
+    #     }
+    #     getGraphicsEvent("ctrl-S to save",onKeybd = keybd)
+
     
     ## maybe use just this to gate, and save the filter results, and let user to plot at later time or any time
     
-    
-
     ##--------------------------------------------------------------------------
     ## data   
     
@@ -58,40 +56,39 @@ polygon.gate=function(action,window) {
     
     print(summary(polygonGate.filter))
     
-
-    appspace[polygonGate.split]=split(appspace[active.seqFrame],polygonGate)
+    
+    polygonGate.split=split(appspace[active.seqFrame],polygonGate)
     
     
-    #x=sapply(appspace[polygonGate.split],keyword,"GUID")
-    child.node.name=sapply(appspace[polygonGate.split],function(frames){
-      keyword(frames)$GUID  
+    #x=sapply(polygonGate.split,keyword,"GUID")
+    child.node.name=sapply(polygonGate.split,function(frames){
+        keyword(frames)$GUID  
     })
     
-
+    
     ## add one keyword/description as fruit.name serve as a nick name to fast catch the gate in the plotting
     for (i in 1:length(child.node.name)) 
-        keyword(appspace[polygonGate.split][[i]])$VEGGI.NAME=child.node.name[i]
+        keyword(polygonGate.split[[i]])$VEGGI.NAME=child.node.name[i]
     
     
     # the R way for repeated operation
     # could have use for loop instead
-    sapply(seq_along(child.node.name),function(i){
-        assign(child.node.name[i],value=appspace[polygonGate.split][[i]],envir=.AppEnv) })
+    #     sapply(seq_along(child.node.name),function(i){
+    #         assign(child.node.name[i],value=polygonGate.split[[i]],envir=.AppEnv) })
     
-
+    # put result seqframes into seqFrame.list
+    sapply(seq_along(child.node.name),function(i){
+        appspace[seqFrame.list][[child.node.name[i]]]=polygonGate.split[[i]]})
+    
+    
     insert.node(
         node.name=child.node.name,tree.view=appspace[active.view],method="insert")
-
-    
-    
-
+     
 }
 
 
 # assign different values to each list element
 #     values=child.node.name
-#     lists=appspace[polygonGate.split]
+#     lists=polygonGate.split
 #     for (i in 1:length(values)) keyword(lists[[i]])$VEGGI.NAME=values[i]
 
-##TODO
-## make the tree expand

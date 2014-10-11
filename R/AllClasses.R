@@ -1,8 +1,16 @@
-# add a new slot called featureAnnotation
+# add a new slot called annotation
 
 # for better display on mac for now
 # Rstudio graphics not clear
 options(device = "quartz")
+
+
+##' @import RGtk2
+##' @import flowCore
+##' @import flowViz
+##' @import Biobase
+##' @import flowStats
+
 
 
 
@@ -25,9 +33,9 @@ library(lattice)
 ## -----------------------------------------------------------------------------
 ## Class seqFrame
 
-setClass(Class="seqFrame",
-         representation(featureAnnotation="data.frame"),
-         contains="flowFrame") 
+# setClass(Class="seqFrame",
+#          representation(annotation="data.frame"),
+#          contains="flowFrame") 
 
 # getClass("seqFrame")
 
@@ -46,13 +54,13 @@ setClass(Class="seqFrame",
 
 # setClass(Class="seqFrame",
 #          contains="flowFrame",
-#          representation(featureAnnotation="data.frame")) 
+#          representation(annotation="data.frame")) 
 # change the sequence won't change the sequence slot printed out
 
-
-# setClass(Class="seqFrame",
-#          contains="flowFrame",
-#          representation(annotation="data.frame")) 
+##' @exportClass seqFrame
+setClass(Class="seqFrame",
+         contains="flowFrame",
+         representation(annotation="data.frame")) 
 
 # data.frame is better in this case, as it is easier to manipulate and display, althought they are essentially the same. 
 # when construct, user has to pass in the annotation they want to look at, it may not be the same as the parameters were calculated, such as promoter for histone coverage, while exon counts for the same gene's expression. as long as they are corresponding, they are good. 
@@ -64,27 +72,100 @@ setClass(Class="seqFrame",
 # Class:    data.frame      NcdfOrMatrix    AnnotatedDataFrame      list                        
 # Extends: "flowFrame"
 
-# since I haven't decide whether and what to do with annotation, just use what's working now featureAnnotation
+# since I haven't decide whether and what to do with annotation, just use what's working now annotation
 
 
 
-veggie=function(){
-    veg=c("avocado","melon","olive","pepper","pumpkin","vanilla","tomato","squash","broccoli","chickpea","bean","celery")
-    
 
-    name=paste(sample(veg,1),sample(0:9,1),sample(0:9,1),sep="")
-    return(name)
+# the seqFrame constructor 
+##' @export seqFrame
+seqFrame=function(exprs=matrix(),
+                  parameters=AnnotatedDataFrame(),
+                  description=list(),
+                  annotation=data.frame()){
+    new("seqFrame",
+        exprs=exprs,
+        parameters=parameters,
+        description=description,
+        annotation=annotation)
 }
 
 
 
 
-#     num=c(sample(0:9,3,replace=T))
-#     num=as.integer(sample(0:9,3,replace=T))
-#     sample(0:9,3)
+# setGeneric(
+#     name="seqFrame",
+#     def=function(obj,bamFile=character(0)){
+#         standardGeneric("getReadCoverage")
+#     })
 
 
-# guid <- function(len=10){
-#     ltrs <- letters
-#     paste(sample(c(letters,0:9),replace=TRUE),collapse="")
-# }
+# 
+# # a seqFrame constructor makes flowFrame to seqFrame with annotation information
+
+# setMethod(
+#     f="seqFrame",
+#     signature="flowFrame",
+#     definition=function(obj,annotation){
+#        # sf=seqFrame(exprs=exprs(obj),
+#         sf=new("seqFrame",
+#                exprs=exprs(obj),           
+#                parameters=parameters(obj),
+#                description=description(obj),
+#                annotation=annotation
+#                     )
+#     })
+
+##' @export flowFrame2seqFrame
+flowFrame2seqFrame=function(ff,annotation){
+        # sf=seqFrame(exprs=exprs(ff),
+        sf=new("seqFrame",
+               exprs=exprs(ff),           
+               parameters=parameters(ff),
+               description=description(ff),
+               annotation=annotation
+        )
+    }
+
+
+
+
+# it turn out the splited seqFrame remain seqFrame instead of flowFrame(even though the print method shows it as flowFrame)
+## its annotation also gets inherited but not splited
+
+
+# setMethod(
+#     f="seqFrame",
+#     signature="seqFrame",
+#     definition=function(obj,annotation){
+#         # sf=seqFrame(exprs=exprs(obj),
+#         sf=new("seqFrame",
+#                exprs=exprs(obj),           
+#                parameters=parameters(obj),
+#                description=description(obj),
+#                annotation=annotation
+#         )
+#     })
+
+
+## change annotation to annotation avoid masking by Biobase and BioGenerics
+
+
+# function(sf,annotation){
+#         # sf=seqFrame(exprs=exprs(obj),
+#         sf=new("seqFrame",
+#                exprs=exprs(obj),           
+#                parameters=parameters(obj),
+#                description=description(obj),
+#                annotation=annotation
+#         )
+#     })
+
+
+
+
+
+
+
+
+
