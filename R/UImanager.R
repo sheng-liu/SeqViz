@@ -1,8 +1,8 @@
 
-# clover UImanager
+# SeqViz UImanager
 
 ## -----------------------------------------------------------------------------
-## Clover 
+## SeqViz 
 
 
 ## TODO
@@ -39,11 +39,11 @@ library(lattice)
 
 
 
-##' @export Clover
-Clover=function(){
+##' @export SeqViz
+SeqViz=function(){
     
     # initialize active.SeqFrame
-    #file=system.file("extdata", "Initialize.csv",package = "Clover")
+    #file=system.file("extdata", "Initialize.csv",package = "SeqViz")
     #sf=file2sf(file)
     
     #data.name=basename(file)
@@ -63,7 +63,7 @@ Clover=function(){
     
     main_window <- gtkWindow(show = FALSE)
     # change title (property)
-    main_window["title"] <- "Clover"
+    main_window["title"] <- "SeqViz"
     # setDefultSize ()
     main_window$setDefaultSize(800, 600)
     
@@ -147,11 +147,11 @@ Clover=function(){
             # no need to put the process, only sf is used for plotting
             file=dialog$getFilename()
             
-            sf=file2sf(file)
+            # sf=file2sf(file)
+            sf=SeqFrame(file=file)
             
             # add an veggi name to sf for easy finding it when plotting
             data.name=basename(file)
-            
             keyword(sf)$VEGGI.NAME=data.name
             
             # if it only have one node, create a list, 
@@ -281,7 +281,7 @@ Clover=function(){
     # Demo
     Demo=function(widget,window) {
         # code copy from Open_CSV(), see logic there
-        file=system.file("extdata", "Demo.csv",package = "Clover")
+        file=system.file("extdata", "Demo.csv",package = "SeqViz")
         sf=file2sf(file)
         data.name=basename(file)
         keyword(sf)$VEGGI.NAME=data.name
@@ -413,7 +413,7 @@ Clover=function(){
     helpActionEntries <- list(  # name,ID,label,accelerator,tooltip,callback
         demo=list("Demo","","Demo",NULL,"Load Demo Data",Demo),
         help = list("Help", "", "Help", NULL, "Open Help Doc", NULL),
-        about = list("About", "gtk-about", "About", NULL, "About Clover", 
+        about = list("About", "gtk-about", "About", NULL, "About SeqViz", 
                      NULL)
     )
     #helpActionGroup$addActions(helpActionEntries)
@@ -429,7 +429,7 @@ Clover=function(){
     ## -------------------------------------------------------------------------
     ## Defining UI layout
     
-    xml=system.file("etc", "Clover-menu.xml",package = "Clover")
+    xml=system.file("etc", "SeqViz-menu.xml",package = "SeqViz")
     
     id =  uimanager$addUiFromFile(xml)
     
@@ -543,7 +543,7 @@ Clover=function(){
     #### somehow this single line is able to make the view dynamic
     ## seems wiget is constantly lisenting to varialbes?
     ## all the changes in gate is made to appspace[active.view]
-    ## and it is able to insert node into this view in this clover function environment
+    ## and it is able to insert node into this view in this SeqViz function environment
     
     
     
@@ -608,7 +608,7 @@ Clover=function(){
     ##------------------------------------------------------------------------------
     ## table
     
-    #file=system.file("extdata", "Demo.csv",package = "Clover")
+    #file=system.file("extdata", "Demo.csv",package = "SeqViz")
     #sf=file2sf(file)
     # load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.ff.rda")
     #load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.fs.rda")

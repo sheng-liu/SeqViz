@@ -3,7 +3,7 @@
 export("[.appspace")
 export("[<-.appspace")
 export(.AppEnv)
-export(Clover)
+export(SeqViz)
 export(appspace)
 export(check.channels)
 export(delete.node)

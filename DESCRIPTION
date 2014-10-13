@@ -1,0 +1,11 @@
+Package: SeqViz
+Type: Package
+Title: Epigenome data exploration
+Version: 1.0
+Date: 2014-08-29
+Author: Sheng Liu
+Maintainer: Sheng Liu <shengliumailbox@gmail.com>
+Description: Graphical interface, epigenome data analysis and pattern
+    recognition through visulization. A sequencing data exploratory tool build
+    by bench scientist and for bench scientist.
+License: Artistic-2.0
