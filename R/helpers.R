@@ -18,7 +18,7 @@
 df2sf=function(df,keyword=NULL){
     
     # use df as FILENAME if FILENAME is not supplied
-    df.name=deparse(substitute(df))
+    data.name=deparse(substitute(df))
     # note once df value changed, substitute(df) will produce the new df value instead of its origianl name (promised object)
     
     # add strand if there isn't 

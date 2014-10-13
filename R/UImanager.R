@@ -9,6 +9,33 @@
 ## add import UCSC tracks
 ## clickable to UCSC browser
 
+# for better display on mac for now
+# Rstudio graphics not clear
+options(device = "quartz")
+
+
+##' @import RGtk2
+##' @import SeqData
+##' @import SeqFrame
+##' these may not be needed as SeqFrame loaded them
+##' @import flowCore
+##' @import flowViz
+##' @import Biobase
+##' @import flowStats
+
+
+
+
+library(RGtk2)
+library(flowCore)
+library(flowViz)
+library(Biobase)
+library(flowStats)
+library(lattice) 
+# though flowViz load it, somehow it is not loaded when load the package
+
+
+
 ##' @export Clover
 Clover=function(){
     
