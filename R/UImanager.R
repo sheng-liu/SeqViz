@@ -17,7 +17,9 @@ options(device = "quartz")
 ##' @import RGtk2
 ##' @import SeqData
 ##' @import SeqFrame
-##' these may not be needed as SeqFrame loaded them
+
+## these may not be needed as SeqFrame loaded them
+
 ##' @import flowCore
 ##' @import flowViz
 ##' @import Biobase
@@ -25,7 +27,8 @@ options(device = "quartz")
 
 
 
-
+library(SeqData)
+library(SeqFrame)
 library(RGtk2)
 library(flowCore)
 library(flowViz)
