@@ -1,0 +1,59 @@
+<ui>
+    <menubar name="menubar">
+        <menu name="FileMenu" action="File">      
+            <menuitem name="Open_Bam" action="Open_Bam"/>
+            <menuitem name="Open_Annotation" action="Open_Annotation"/>
+            <menuitem name="Open_CSV" action="Open_CSV"/>
+            <menuitem name="Save_CSV" action="Save_CSV"/>
+            <menuitem name="Save_PDF" action="Save_PDF"/>
+            <separator />
+            <menuitem name="Quit_Clover" action="Quit"/>
+        </menu>
+        
+        <menu name="Edit" action="Edit">
+                <menuitem name="Undo" action="Undo" />
+                <menuitem name="Redo" action="Redo" />
+                
+        </menu>
+
+        <menu name="Tools" action="Tools">
+                <menuitem action="Preference"/>
+                
+                <separator />
+
+                <menuitem name="DataSummary" action="DataSummary" />
+                <menuitem name="GetMeasure" action="GetMeasure"/>
+            
+                <separator />
+
+                
+                <menu name="Gate" action="Gate" >
+                    <menuitem name="PolygonGate" action="PolygonGate" />
+                    <menuitem name="RectangleGate" action="RectangleGate" />
+                </menu>
+        
+                <menu name="Plot" action="Plot">
+                    <menuitem name="CountourPlot" action="CountourPlot" />
+                    <menuitem name="HistogramPlot" action="HistogramPlot" />
+                </menu>
+        </menu>
+        <menu name="Help" action="Help">
+                <menuitem action="Demo"/>
+                <menuitem action="Help"/>
+                <menuitem action="About"/>
+        </menu>
+        
+    </menubar>
+
+    <toolbar name="toolbar">
+        <toolitem action="Open_Bam"/>
+        <toolitem action="Open_Annotation"/>
+        <toolitem action="Open_CSV"/>
+        <separator />
+        <toolitem action="Save_CSV"/>
+        <toolitem action="Save_PDF"/>
+
+
+    </toolbar>
+
+</ui>

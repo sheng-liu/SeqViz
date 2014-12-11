@@ -1,6 +1,6 @@
 Package: SeqViz
 Type: Package
-Title: Epigenome data exploration
+Title: A graphical interface for multidimensional epigenome data exploration
 Version: 1.0
 Date: 2014-08-29
 Author: Sheng Liu
