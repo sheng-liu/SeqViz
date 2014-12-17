@@ -12,6 +12,7 @@ rectangle.gate=function(action,window){
     
     #xWindow=X11()
     x11(width=4,height=4)
+    plot.new()
     flowPlot(x=appspace[active.SeqFrame],
              plotParameters=c(appspace[channelX],appspace[channelY]))
     
@@ -24,8 +25,8 @@ rectangle.gate=function(action,window){
             x.cord=grconvertX(x,from="ndc",to="user")
             y.cord=grconvertY(y,from="ndc",to="user")
             
-            #cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
-            #cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
+            cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
+            cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
             
             appspace[x.cord.ini]=x.cord
             appspace[y.cord.ini]=y.cord

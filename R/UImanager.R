@@ -3,6 +3,27 @@
 
 ## -----------------------------------------------------------------------------
 ## SeqViz 
+##' @name SeqViz
+##' @aliases SeqViz
+##' @title SeqViz-graphical interface for epigenomic data exploration
+##' @rdname SeqViz
+##' @docType methods
+##' @description SeqViz is a graphical interface for visulization of epigenomic data. 
+
+##' @usage
+##' SeqViz()
+## @param bamFie Full path to bam file (optional).
+## @param annotationFile Full path to annotation file (optional).
+##' @return a GTK+ graphical interface for simple epigenomic data computation and visulization 
+##' @details 
+##' SeqViz provide a graphical interface for epigenomic data visulization. It implements basic counting functions from SeqData package for computations on bam file, and and SeqFrame package for interfacing tables to flowCore (SeqFrame can interface a variaty of table like data into SeqFrame, the graphical interface currently only support csv files). It then utilize flowCore and flowViz for data subsetting and visulization. Users can use the other two package without invoke this graphical interface, and achive more functionality. 
+
+##' @seealso
+##' See SeqFrame for interfacing more different type of data, and SeqData for more functions that is not implemented in the graphical interface.
+
+
+
+
 
 
 ## TODO
@@ -35,6 +56,7 @@ library(flowViz)
 library(Biobase)
 library(flowStats)
 library(lattice) 
+library(ggplot2)
 # though flowViz load it, somehow it is not loaded when load the package
 
 
@@ -68,7 +90,7 @@ SeqViz=function(){
     main_window$setDefaultSize(800, 600)
     
     
-    ## -------------------------------------------------------------------------
+    ##==========================================================================
     ## Implementing callbacks
     
     
@@ -88,13 +110,25 @@ SeqViz=function(){
             
             # get file name, no further reading functions, as it is too big
             file=dialog$getFilename()
-            appspace[bamFile]=file
-            
             data.name=basename(file)
             
+            ## put bamFile into bamFile.list
+            model=appspace[DataPage.data.view]$getModel()
+            length.tree.view=model$iterNChildren()
+            if(length.tree.view==0){
+                appspace[bamFile.list]=list()
+            }
+            # set the name of the bamFile.list
+            appspace[bamFile.list][data.name]=data.name 
+            # fill in the content
+            appspace[bamFile.list][[data.name]]=file
+            # set active.SeqFrame to inserted bamFile
+            cat("active.bamFile set to inserted bamFile ",data.name,"\n")
+            appspace[active.bamFile]=file
             
+            # insert.node
             insert.node(node.name=data.name,
-                        tree.view=DataPage.node.view,
+                        tree.view=DataPage.data.view,
                         method="append")
             
             
@@ -102,7 +136,8 @@ SeqViz=function(){
         dialog$destroy()
     }    
     
-    
+    ## -------------------------------------------------------------------------
+    ## Open_Annotation
     Open_Annotation=function(widget, window) {
         dialog<-gtkFileChooserDialog(
             title="Choose a CSV file",
@@ -115,10 +150,35 @@ SeqViz=function(){
         if(dialog$run()==GtkResponseType["accept"]){
             
             file=dialog$getFilename()
-            appspace[annotationFile]=file
-
+            #appspace[annotationFile]=file
             data.name=basename(file)
-
+            
+            ## put annotationFile into annotationFile.list
+            model=appspace[DataPage.anno.view]$getModel()
+            length.tree.view=model$iterNChildren()
+            if(length.tree.view==0){
+                appspace[annotationFile.list]=list()
+            }
+            
+            
+            # set the name of the annotationFile.list
+            appspace[annotationFile.list][data.name]=data.name 
+            # fill in the content
+            appspace[annotationFile.list][[data.name]]=file
+            # set active.SeqFrame to inserted annotationFile
+            cat("active.annotationFile set to inserted annotationFile ",data.name,"\n")
+            appspace[active.annotationFile]=file
+            
+            # insert.node
+            insert.node(node.name=data.name,
+                        tree.view=DataPage.anno.view,
+                        method="append")
+            
+            
+            
+            
+            
+            
             #data=getannotation(annotationFile=file)
             #anno=annotation(data)
             #appspace[annotation]=anno
@@ -127,7 +187,8 @@ SeqViz=function(){
         
     }
     
-    
+    ## -------------------------------------------------------------------------
+    ## Open_CSV
     Open_CSV=function(widget, window) {
         dialog=gtkFileChooserDialog(
             title="Choose a CSV file",
@@ -146,6 +207,9 @@ SeqViz=function(){
             # assign data.frame to appspace for passing of variables
             # no need to put the process, only sf is used for plotting
             file=dialog$getFilename()
+            
+            #df=read.csv(file=file,as.is=T,header=T)
+            #if(dim(df))
             
             # sf=file2sf(file)
             sf=SeqFrame(file=file)
@@ -184,7 +248,7 @@ SeqViz=function(){
             # set active.SeqFrame to inserted SeqFrame
             cat("active.SeqFrame set to inserted SeqFrame ",data.name,"\n")
             appspace[active.SeqFrame]=sf
-              
+            
             # active.SeqFrame is decided here when new data inserted
             # later it is specified by select.node
             # set active.SeqFrame to the newly loaded SeqFrame
@@ -194,8 +258,8 @@ SeqViz=function(){
             # selected.node(appspace[active.view])
             
             
-
-                        
+            
+            
             insert.node(node.name=data.name,
                         tree.view=PlotPage.node.view,
                         method="append")
@@ -215,7 +279,8 @@ SeqViz=function(){
     }
     
     
-    
+    ## -------------------------------------------------------------------------
+    ## Save_CSV
     Save_CSV=function(widget, window) {
         dialog<-gtkFileChooserDialog(
             title="Enter a name for the file",
@@ -227,8 +292,11 @@ SeqViz=function(){
         if(dialog$run()==GtkResponseType["accept"]){
             file.name=paste(dialog$getFilename(),".csv",sep="")
             cat("CSV file saved to ",file.name,"\n")
+            # update selected.node
+            selected.node(appspace[active.view])
             # save only active.seqFram
-            write.csv(file=file.name,exprs(appspace[active.SeqFrame]),row.names=F)
+            sf.table=SeqFrame.table(appspace[active.SeqFrame])
+            write.csv(file=file.name,sf.table,row.names=F)
             dialog$destroy()
         }
         
@@ -236,6 +304,9 @@ SeqViz=function(){
     
     # note this only saves the current active window which is show at the top of
     # the x11 window
+    
+    ## -------------------------------------------------------------------------
+    ## Save_PDF
     Save_PDF=function(widget, window) {
         dialog<-gtkFileChooserDialog(
             title="Enter a name for the file",
@@ -260,25 +331,17 @@ SeqViz=function(){
     }
     
     
-    
-    
-    
-    
-    
     ## open_bigWig
     ## it would be nice one can simply input UCSC track location, then look at it globally
     ## add a button conversion between UCSC 
     
-    
-    
-    
-    #save_file
-    
+    ## -------------------------------------------------------------------------
+    ## Quit
     Quit=function(widget, window) window$destroy()
     
     
-    
-    # Demo
+    ## -------------------------------------------------------------------------
+    ## Demo
     Demo=function(widget,window) {
         # code copy from Open_CSV(), see logic there
         file=system.file("extdata", "Demo.csv",package = "SeqViz")
@@ -312,9 +375,8 @@ SeqViz=function(){
     }
     
     
-    
+    ## -------------------------------------------------------------------------
     ## tool group
-    
     UnDo=function(action,...) 
         statusbar$push(statusbar$getContextId("message"), 
                        action$getName())
@@ -342,7 +404,8 @@ SeqViz=function(){
     
     
     
-    
+    ##--------------------------------------------------------------------------
+    ## plot buttons group
     PolygonGate=polygon.gate
     
     RectangleGate=function(action,...) 
@@ -357,14 +420,14 @@ SeqViz=function(){
         statusbar$push(statusbar$getContextId("message"), 
                        action$getName())
     
-    ## -----------------------------------------------------------------------------
+    ##==========================================================================
     ## defining the actions
     
     # xml defines what icon to put into tool bar and menu bar
     
     
-    
-    # fileActionGroup
+    ##--------------------------------------------------------------------------
+    ## fileActionGroup
     fileActionGroup=gtkActionGroup(name="fileActionGroup")
     
     fileActionEntries=list(  ## name, ID, label, accelerator, tooltip, callback
@@ -426,7 +489,7 @@ SeqViz=function(){
     uimanager$insertActionGroup(toolActionGroup,0)
     uimanager$insertActionGroup(helpActionGroup,0)
     
-    ## -------------------------------------------------------------------------
+    ##==========================================================================
     ## Defining UI layout
     
     xml=system.file("etc", "SeqViz-menu.xml",package = "SeqViz")
@@ -549,7 +612,8 @@ SeqViz=function(){
     
     # insert column one by one
     PlotPage.node.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
-                                                  title="Plot Data",
+                                                  #title="Plot Data",
+                                                  title="",
                                                   cell=gtkCellRendererText(),
                                                   text=1-1)  
     
@@ -672,6 +736,7 @@ SeqViz=function(){
     scatter.plot.button=gtkButton(label="Scatter")
     density.plot.button=gtkButton(label="Density")
     histogram.plot.button=gtkButton(label="Histogram")
+    DDplus.plot.button=gtkButton(label="2D+")
     
     plot.info.label=gtkLabel("Information")
     
@@ -679,7 +744,7 @@ SeqViz=function(){
     
     plot.button.table$attach(scatter.plot.button, left.attach = 0,1, top.attach = 0,1)
     plot.button.table$attach(density.plot.button, left.attach = 1,2, top.attach = 0,1)
-    #plot.button.table$attach(countour.plot.button, left.attach = 2,3, top.attach = 0,1)
+    plot.button.table$attach(DDplus.plot.button, left.attach = 2,3, top.attach = 0,1)
     #plot.button.table$attach(histogram.plot.button, left.attach = 0,1, top.attach = 1,2)
     #plot.button.table$attach(, left.attach = 1,2, top.attach = 2,3)
     
@@ -688,7 +753,7 @@ SeqViz=function(){
     
     PlotPage.rightPane$packEnd(child=PlotPage.info.scrolled.window,expand=T,fill=T,padding=0)
     
-    ## -----------------------------------------------------------------------------
+    ## -------------------------------------------------------------------------
     ## Data page
     
     ## same pattern as PlotPage, this also reflects the analysis similarity
@@ -701,21 +766,22 @@ SeqViz=function(){
     
     
     # define gtkTreeStore model with one column stores "character"
-    DataPage.node.model=gtkTreeStore("gchararray")
+    DataPage.data.model=gtkTreeStore("gchararray")
     
     # setup gtkTreeView to display gtkTreeStore model
-    DataPage.node.view=gtkTreeView()
+    DataPage.data.view=gtkTreeView()
     
     # insert column one by one
-    DataPage.node.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
-                                                  title="Sequencing Data",
+    DataPage.data.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
+                                                  #title="Sequencing Data",
+                                                  title="",
                                                   cell=gtkCellRendererText(),
                                                   text=1-1)  
     
     # add model to view
-    DataPage.node.view$setModel(DataPage.node.model)
+    DataPage.data.view$setModel(DataPage.data.model)
     
-    appspace[active.data.view]=DataPage.node.view
+    appspace[DataPage.data.view]=DataPage.data.view
     
     annotation.label=gtkLabel("Annotation_mm9")
     
@@ -745,7 +811,7 @@ SeqViz=function(){
     DataPage.leftPane$packEnd(child=annotation.button.table,expand=F,fill=F,padding=0)
     # PlotPage.leftPane$packEnd(child=gate.label,expand=F,fill=F,padding=0)
     
-    DataPage.leftPane$packStart(child=DataPage.node.view,expand=T,fill=T,padding=0)
+    DataPage.leftPane$packStart(child=DataPage.data.view,expand=T,fill=T,padding=0)
     
     ##---------------------------------------------------------------------------
     ## DataPage.rightPane
@@ -754,34 +820,84 @@ SeqViz=function(){
     
     # gtkTreeView for the Info
     # construct rGtkDataFrame
-    #   DataPage.info.model <- rGtkDataFrame (exprs(sf))
-    #DataPage.info.model$setFrame(Cars93[1:5 , 1:5])
+    
+    
+    
+    
+    #annotation=c("Gene_exonic","Gene_body","TSS_1kb","Retrotransposons","SimpleRepeats","Bins_1kb" )
+    #anno.df=data.frame(annotation)
+    #DataPage.anno.model <- rGtkDataFrame (anno.df)
+    #DataPage.anno.model$setFrame(Cars93[1:5 , 1:5])
+    
+    
+    # can also define it as treeStore, future have child nodes
+    # define gtkTreeStore model with one column stores "character"
+    DataPage.anno.model=gtkTreeStore("gchararray")
+    # setup gtkTreeView to display gtkTreeStore model
+    DataPage.anno.view=gtkTreeView()
+    # insert column one by one
+    DataPage.anno.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
+                                                  #title="Sequencing Data",
+                                                  title="",
+                                                  cell=gtkCellRendererText(),
+                                                  text=1-1)  
+    
+    # add model to view
+    DataPage.anno.view$setModel(DataPage.anno.model)
+    
+    
+    
+    
+    
     
     
     # Displaying data as a list or table
-    #    DataPage.info.view<-gtkTreeView(DataPage.info.model)
+    # DataPage.anno.view<-gtkTreeView(DataPage.anno.model)
     
-    # construct gtkTreeViewColumn
-    #    DataPage.info.column<-gtkTreeViewColumn()
+    ## for simplicity for now, do not show internal annotaion yet
+    # DataPage.anno.view<-gtkTreeView()
     
-    # DataPage.info.column$setTitle("Manufacturer")
-    
-    #    cell_renderer<-gtkCellRendererText()
-    #    DataPage.info.column$packStart(cell_renderer)
-    #    DataPage.info.column$addAttribute(cell_renderer,"text",0)
-    
-    # insert gtkTreeViewColumn to the first position of the column
-    # DataPage.info.view$insertColumn(DataPage.info.column,0)
-    
-    #     mapply(DataPage.info.view$insertColumnWithAttributes,
-    #            position=-1,
-    #            title=colnames(DataPage.info.model),
-    #            cell=list(gtkCellRendererText()),text=seq_len(ncol(DataPage.info.model))-1)
+    #     # construct gtkTreeViewColumn
+    #     DataPage.anno.column<-gtkTreeViewColumn()
     #     
-    DataPage.info.view=gtkTreeView()    
+    #     #DataPage.anno.column$setTitle("Annotation")
+    #     
+    #     cell_renderer<-gtkCellRendererText()
+    #     DataPage.anno.column$packStart(cell_renderer)
+    #     DataPage.anno.column$addAttribute(cell_renderer,"text",0)
+    #     
+    #     # insert gtkTreeViewColumn to the first position of the column
+    #     # DataPage.anno.view$insertColumn(DataPage.anno.column,0)
+    #     
+    #     mapply(DataPage.anno.view$insertColumnWithAttributes,
+    #            position=-1,
+    #            title=colnames(DataPage.anno.model),
+    #            cell=list(gtkCellRendererText()),text=seq_len(ncol(DataPage.anno.model))-1)
     
-    DataPage.info.scrolled.window<-gtkScrolledWindow()
-    DataPage.info.scrolled.window$add(DataPage.info.view)
+    appspace[DataPage.anno.view]=DataPage.anno.view
+    #     DataPage.anno.view=gtkTreeView()    
+    #     
+    DataPage.anno.scrolled.window<-gtkScrolledWindow()
+    DataPage.anno.scrolled.window$add(DataPage.anno.view)
+    
+    #     # define gtkTreeStore model with one column stores "character"
+    #     DataPage.anno.model=gtkTreeStore("gchararray")
+    #     
+    #     # setup gtkTreeView to display gtkTreeStore model
+    #     DataPage.anno.view=gtkTreeView()
+    #     
+    #     # insert column one by one
+    #     DataPage.anno.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
+    #                                                   #title="Sequencing Data",
+    #                                                   title="",
+    #                                                   cell=gtkCellRendererText(),
+    #                                                   text=1-1)  
+    #     
+    #     # add model to view
+    #     DataPage.anno.view$setModel(DataPage.anno.model)
+    #     appspace[DataPage.anno.view]=DataPage.anno.view
+    #     
+    
     
     
     ## Graph buttons
@@ -793,50 +909,154 @@ SeqViz=function(){
     findEnriched=gtkButton(label="findEnrichedRegion")
     
     ## function 
-    function.info.label=gtkLabel("Information")
+    #count.method.label=gtkLabel("count method")
+    count.method.label=gtkLabel("")
+    ## TOD: use a frame surrounding the button and the radio button is a good way to inlcude this information
+    
     
     #function.button.table$attach(function.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
-    function.button.table$attach(data.summary.button, left.attach = 0,1, top.attach = 1,2)
-    function.button.table$attach(get.measure.button, left.attach = 1,2, top.attach = 1,2)
-    function.button.table$attach(findEnriched, left.attach = 2,3, top.attach = 1,2)
+    
+    #     function.button.table$attach(data.summary.button, left.attach = 0,1, top.attach = 1,2)
+    #     function.button.table$attach(get.measure.button, left.attach = 1,2, top.attach = 1,2)
+    #     function.button.table$attach(findEnriched, left.attach = 2,3, top.attach = 1,2)
     
     #function.button.table$attach(histogram.plot.button, left.attach = 0,1, top.attach = 1,2)
-    # add a spinner for fun
+    
+    
+    ## -------------------------------------------------------------------------
+    ## radio buttons for count method
+    
+    count.method=c("read counts","read coverage","base percentage")
+    
+    count.method.list=vector("list",length(count.method))
+    names(count.method.list)=count.method
+    # use radio button
+    for (i in 1:length(count.method)) {
+        count.method.list[[i]]=gtkRadioButton(label=count.method[i])
+    }
+    
+    # put the buttons into one group ( the first buttons group)
+    # gtkRadioButtonSetGroup(object=count.method.list[[2]],group=g) 
+    g=gtkRadioButtonGetGroup(count.method.list[[1]])
+    
+    buttons.tobe.grouped=count.method.list[-1]
+    lapply(buttons.tobe.grouped,function(button){
+        gtkRadioButtonSetGroup(object=button,group=g)
+    }) 
+    
+    ## put radio button's selection into appspace
+    appspace[count.method.list]=count.method.list
+    
+    function.button.table$attach(
+        count.method.list[[1]], left.attach = 0,1, top.attach = 1,2)
+    function.button.table$attach(
+        count.method.list[[2]], left.attach = 1,2, top.attach = 1,2)
+    function.button.table$attach(
+        count.method.list[[3]], left.attach = 2,3, top.attach = 1,2)
+    
+    ## -------------------------------------------------------------------------
+    ## add a spinner for fun
     # also shows progress 
-#     spinner <- gtkSpinner()
-#     spinner["visible"]=F
-#     spinner["active"]=F
+    #     spinner <- gtkSpinner()
+    #     spinner["visible"]=F
+    #     spinner["active"]=F
     
-#    appspace[spinner]=spinner
-#    function.button.table$attach(spinner, left.attach = 2,3, top.attach = 2,3)
+    #    appspace[spinner]=spinner
+    # function.button.table$attach(spinner, left.attach = 2,3, top.attach = 2,3)
+    
+    
+    DataPage.rightPane$packStart(
+        child=count.method.label,expand=F,fill=F,padding=0)
+    DataPage.rightPane$packStart(
+        child=function.button.table,expand=F,fill=F,padding=0)
+    DataPage.rightPane$packEnd(
+        child=DataPage.anno.scrolled.window,expand=T,fill=T,padding=0)
     
     
     
-    DataPage.rightPane$packStart(child=function.button.table,expand=F,fill=F,padding=0)
-    DataPage.rightPane$packStart(child=function.info.label,expand=F,fill=F,padding=0)
-    DataPage.rightPane$packEnd(child=DataPage.info.scrolled.window,expand=T,fill=T,padding=0)
+    
+    
+    
+    
+    
+    
     
     main_window$showAll()
+    ## -------------------------------------------------------------------------
+    ## drag and drops
+    
+    ## drag and drop setup
+    TARGET <- c(string = 0)
+    targetentries <-
+        list(
+            c(target="STRING", flags=0, info=TARGET[["string"]]),
+            c(target="text/plain", flags=0, info=TARGET[["string"]]) 
+        )
+    
+    
+    # gtkDragSourceSet, this won't allow row-wise drag-drop, it is widget wise, works between two views
+    
+    gtkDragSourceSet(object=DataPage.anno.view, 
+                     start.button.mask="button1-mask", 
+                     targets=targetentries, 
+                     actions="copy")
+    gtkDragDestSet(obj=DataPage.data.view, 
+                   flags="all", 
+                   targets=targetentries, 
+                   actions="copy")
+    
+    
+    
+    ## -------------------------------------------------------------------------
+    ## connect signals
+    # connect drag and drop 
+    gSignalConnect(obj=DataPage.anno.view, signal="drag-data-get", f=drag)
+    gSignalConnect(obj=DataPage.data.view, signal="drag-data-received", f=drop.and.count)
+    
     
     # connect buttons
     gSignalConnect(obj=polygon.gate.button, signal="clicked", f=polygon.gate)
     gSignalConnect(obj=scatter.plot.button, signal="clicked", f=scatter.plot)    
-    gSignalConnect(obj=density.plot.button, signal="clicked", f=density.plot)    
+    gSignalConnect(obj=density.plot.button, signal="clicked", f=density.plot) 
+    
+    gSignalConnect(obj=DDplus.plot.button, signal="clicked", f=DDplus.plot)
+    
+    
     gSignalConnect(obj=quadrant.gate.button, signal="clicked", f=quadrant.gate)   
     gSignalConnect(obj=range.gate.button, signal="clicked", f=range.gate)    
     gSignalConnect(obj=rectangle.gate.button, signal="clicked", f=rectangle.gate)
     
-    
+   
     # connect key-press-event with view
     # gSignalConnect(PlotPage.node.view, "key-press-event", delete.node) 
-    gSignalConnect(obj=appspace[active.view], signal="key-press-event", f=delete.node)
+    gSignalConnect(
+        obj=appspace[active.view], signal="key-press-event", f=delete.node)
+    
+    gSignalConnect(
+        obj=appspace[DataPage.data.view], 
+        signal="key-press-event", f=delete.node)
+    gSignalConnect(
+        obj=appspace[DataPage.anno.view], 
+        signal="key-press-event", f=delete.node)
+    
+    
     gSignalConnect(obj=get.measure.button, signal="clicked", f=get.measure)
     gSignalConnect(obj=data.summary.button, signal="clicked", f=data.summary)
     
+    ## connect radio button count method change
+    ## output the selected radio button
+    gSignalConnect(obj=PlotPage.node.view,signal="row-activated",f=update.table.view)
+    
+    # selected.annotation
+    gSignalConnect(obj=PlotPage.table.view,signal="row-activated",f=selected.annotation)
     
     
     
 }
+
+
+
+
 
 ## nomenclature
 ## tree.view  gtkTreeView is named as node.view and table.view for better discriminition

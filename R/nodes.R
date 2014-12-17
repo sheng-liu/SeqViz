@@ -56,7 +56,7 @@ insert.node=function(node.name,tree.view,method=c("insert","append")){
 ## change the active.SeqFrame to selected node
 ## try this function interactively with the GUI, quite fun
 ##' @export selected.node
-selected.node=function(tree.view){
+selected.node=function(tree.view,setActive=T){
     
     # get selected.node.name
     selection=tree.view$getSelection()
@@ -65,16 +65,17 @@ selected.node=function(tree.view){
     selected.node.name=model$get(iter=iter$iter,column=0)[[1]]
     cat("selected.node.name is: ",selected.node.name,"\n")
     
-    # appspace is viewed as public transaction space for all functions
-    # change the active.SeqFrame to selected node
-    SeqFrame.list=appspace[SeqFrame.list]
-    #active.SeqFrame=SeqFrame.list[[names(SeqFrame.list)==selected.node.name]]
-    active.SeqFrame=SeqFrame.list[
-        names(SeqFrame.list)==selected.node.name][[selected.node.name]]
-    
-    appspace[active.SeqFrame]=active.SeqFrame
-    
-    cat("appspace[active.SeqFrame] set to: ",selected.node.name,"\n")
+    if(setActive==T){
+        # appspace is viewed as public transaction space for all functions
+        # change the active.SeqFrame to selected node
+        SeqFrame.list=appspace[SeqFrame.list]
+        #active.SeqFrame=SeqFrame.list[[names(SeqFrame.list)==selected.node.name]]
+        active.SeqFrame=SeqFrame.list[
+            names(SeqFrame.list)==selected.node.name][[selected.node.name]]
+        appspace[active.SeqFrame]=active.SeqFrame
+        cat("appspace[active.SeqFrame] set to: ",selected.node.name,"\n")
+    }
+
     return(selected.node.name)
 }
 
@@ -244,7 +245,9 @@ delete.node=function(view,event){
         # remove the corresponding nodes from SeqFrame.list
         appspace[SeqFrame.list][selected.node.name]=NULL 
         
+        #appspace[bamFile.list][selected.node.name]=NULL
         
+        #appspace[annotationFile.list][selected.node.name]=NULL
         # redo function can work somewhere here
 #         if (undo==T){
 #             insert.node()

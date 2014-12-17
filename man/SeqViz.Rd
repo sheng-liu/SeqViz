@@ -14,6 +14,20 @@ SeqViz is a graphical interface for visulization of epigenomic data.
 }
 \details{
 SeqViz provide a graphical interface for epigenomic data visulization. It implements basic counting functions from SeqData package for computations on bam file, and and SeqFrame package for interfacing tables to flowCore (SeqFrame can interface a variaty of table like data into SeqFrame, the graphical interface currently only support csv files). It then utilize flowCore and flowViz for data subsetting and visulization. Users can use the other two package without invoke this graphical interface, and achive more functionality.
+
+Organization of the three packages:
+
+-Calculations from a bam file with SeqData
+-Interface tables to flowCore with SeqFrame
+-Graphical interface for visualization and gating with SeqViz
+
+Each package has its own help manual, use help(package name) eg. ?SeqData to see package specific help. 
+
+SeqFrame is isolated as an separate package as it is functionally independent with SeqData for basic computation or SeqViz for pure graphical interface. 
+ 
+For usage of SeqViz GUI for basic functions, see a 15min tutorial (http://youtu.be/Zsv4LGTgdA0).
+
+
 }
 \seealso{
 See SeqFrame for interfacing more different type of data, and SeqData for more functions that is not implemented in the graphical interface.

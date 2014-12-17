@@ -32,7 +32,7 @@
 #select.channels=function(window){
 
 ##' @export select.channels
-select.channels=function(channelY=T){
+select.channels=function(channelY=T,channelZ=F){
     channelsDialog=gtkMessageDialog(
         #parent=window,
         
@@ -48,7 +48,7 @@ select.channels=function(channelY=T){
         buttons="ok",
         label="Select channels")
     
-
+    
     # determine active.SeqFrame with selection by the user
     selected.node(appspace[active.view])
     active.SeqFrame=appspace[active.SeqFrame]
@@ -72,10 +72,15 @@ select.channels=function(channelY=T){
     sapply(colnames(active.SeqFrame), channelYcombo$appendText)
     #channelYcombo$appendText(text=colnames(active.SeqFrame()))    
     
+    channelZcombo=gtkComboBoxNewText()
+    sapply(colnames(active.SeqFrame), channelZcombo$appendText)
     
     X.label=gtkLabel(str="X:")
     Y.label=gtkLabel(str="Y:")
+    Z.label=gtkLabel(str="color:")
+    
     # put two gtkLabel and two combo into dialog's vbox
+    # now it is three
     
     hbox=gtkHBox()
     hbox$packStart(child=X.label)
@@ -85,8 +90,15 @@ select.channels=function(channelY=T){
         hbox$packStart(child=Y.label)
         hbox$packStart(child=channelYcombo)
     }
+    
+    if (channelZ==T){
+        hbox$packStart(child=Z.label)
+        hbox$packStart(child=channelZcombo)
+    }
+    
     channelsDialog[["vbox"]]$add(hbox)
     
+    # assuming z is needed when Y is always used
     if(channelY==T){
         if(channelsDialog$run()==GtkResponseType["ok"]){
             appspace[channelX]=channelXcombo$getActiveText()
@@ -95,7 +107,10 @@ select.channels=function(channelY=T){
             # print(appspace[channelY])
             cat("selected channelX",appspace[channelX],"\n")
             cat("selected channelY",appspace[channelY],"\n")
-            
+            if(channelZ==T){
+                appspace[channelZ]=channelZcombo$getActiveText()
+                cat("selected channelZ",appspace[channelZ],"\n")
+            }
             channelsDialog$destroy()
         }
     }else{
@@ -111,10 +126,35 @@ select.channels=function(channelY=T){
         }
     }
     
+#     if(channelZ==T){
+#         if(channelsDialog$run()==GtkResponseType["ok"]){
+#             appspace[channelX]=channelXcombo$getActiveText()
+#             appspace[channelY]=channelYcombo$getActiveText()
+#             appspace[channelZ]=channelYcombo$getActiveText()
+#             # print(appspace[channelX])
+#             # print(appspace[channelY])
+#             cat("selected channelX",appspace[channelX],"\n")
+#             cat("selected channelY",appspace[channelY],"\n")
+#             cat("selected channelZ",appspace[channelZ],"\n")
+#             #channelsDialog$destroy()
+#         }
+#     }else{
+#         if(channelsDialog$run()==GtkResponseType["ok"]){
+#             appspace[channelX]=channelXcombo$getActiveText()
+#             appspace[channelY]=channelYcombo$getActiveText()
+#             # print(appspace[channelX])
+#             # print(appspace[channelY])
+#             cat("selected channelX",appspace[channelX],"\n")
+#             cat("selected channelY",appspace[channelY],"\n")
+#             
+#             #channelsDialog$destroy()
+#         }
+#     }
     
-    
-    
+    #channelsDialog$destroy()  
 }
+
+
 
 
 ## check.channels, can choose multiple selecton or single

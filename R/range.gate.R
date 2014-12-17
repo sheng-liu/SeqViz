@@ -80,12 +80,14 @@ range.gate=function(action, window){
         abline(v=appspace[x.cord.ini],col="cornflowerblue")
         abline(v=x.cord,col="limegreen")
         # draw a line segment connects the two lines
-        segments(x0=appspace[x.cord.ini],y0=y.cord,x1=x.cord,y1=y.cord,col="gray")
+        segments(x0=appspace[x.cord.ini],y0=y.cord,
+                 x1=x.cord,y1=y.cord,col="gray")
         
         appspace[x.cord.end]=x.cord
         
         cat("moves ", paste(buttons, collapse=" "), " at ", x, y, "\n")
-        cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
+        cat("convert ", paste(buttons, collapse=" "), 
+            " at ", x.cord, y.cord, "\n")
         NULL
         
     }

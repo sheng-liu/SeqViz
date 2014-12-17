@@ -13,9 +13,24 @@ quadrant.gate=function(action, window){
     ##--------------------------------------------------------------------------
     ## mouse events
     
-    x11(width=4,height=4)
+   x11(width=4,height=4)
     flowPlot(x=appspace[active.SeqFrame],
              plotParameters=c(appspace[channelX],appspace[channelY]))
+    
+    
+    
+    #,colramp=col
+    # try xyplot
+#         dat=appspace[active.SeqFrame]
+#         x=appspace[channelX]
+#         y=appspace[channelY]
+#         f=sprintf("xyplot(`%s`~`%s`,data =dat,smooth=F,outline=T )",y,x)
+#         parse(text = f)    
+#         x11(width=4,height=4)
+#         plot(eval(parse(text = f)))
+#     
+    
+    
     
     ## define the event handlers
     mousedown=function(buttons,x,y){
@@ -24,6 +39,14 @@ quadrant.gate=function(action, window){
         else {
             flowPlot(x=appspace[active.SeqFrame],
                      plotParameters=c(appspace[channelX],appspace[channelY]))
+            
+#             dat=appspace[active.SeqFrame]
+#             x=appspace[channelX]
+#             y=appspace[channelY]
+#             f=sprintf("xyplot(`%s`~`%s`,data =dat,smooth=F,outline=T )",y,x)
+#             plot.new()   
+#             plot(eval(parse(text = f)))
+            
             
             user.x=grconvertX(x,from="ndc",to="user")
             user.y=grconvertY(y,from="ndc",to="user")
@@ -35,6 +58,19 @@ quadrant.gate=function(action, window){
             # draw guid lines
             abline(v=user.x,col="red")
             abline(h=user.y,col="red")
+            
+#             xyplot(mpg ~ disp | factor(gear), data=mtcars,
+#                    layout=c(3, 1), aspect=1,
+#                    panel=function(...) {
+#                        panel.xyplot(...)  # this does not need to be the first
+#                        panel.abline(h=29, lty="dashed")
+#                        panel.text(470, 29.5, "efficiency criterion",
+#                                   adj=c(1, 0), cex=.7)
+#                        
+#                        
+#                    })
+#             
+#             panel.abline(h=29, lty="dashed")
             
             ## if want to implement click outside plot stop sampling
             ## use a list to collect all user selections
@@ -74,7 +110,8 @@ quadrant.gate=function(action, window){
     
     # no need to put quadGate.split into appspace, just put them into SeqFrame.list
     #appspace[quadGate.split]=split(appspace[active.SeqFrame],quadGate)
-    quadGate.split=split(appspace[active.SeqFrame],quadGate)
+    #quadGate.split=split(appspace[active.SeqFrame],quadGate)
+    quadGate.split=SeqFrame::split(appspace[active.SeqFrame],quadGate)
     
     ## add the veggi name for now
     child.node.name=sapply(quadGate.split,function(frames){keyword(frames)$GUID})
