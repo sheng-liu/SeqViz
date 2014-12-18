@@ -16,7 +16,21 @@
 ## @param annotationFile Full path to annotation file (optional).
 ##' @return a GTK+ graphical interface for simple epigenomic data computation and visulization 
 ##' @details 
-##' SeqViz provide a graphical interface for epigenomic data visulization. It implements basic counting functions from SeqData package for computations on bam file, and and SeqFrame package for interfacing tables to flowCore (SeqFrame can interface a variaty of table like data into SeqFrame, the graphical interface currently only support csv files). It then utilize flowCore and flowViz for data subsetting and visulization. Users can use the other two package without invoke this graphical interface, and achive more functionality. 
+##' SeqViz provide a graphical interface for epigenomic data visulization. It is implemented with GTK+ through rGTK+ package, its underlying computation is implemented by SeqData package for computations on bam file and SeqFrame package for interfacing tables to flowCore. SeqViz then utilize flowCore and flowViz for data subsetting and visulization.
+##'
+##'Organization of the three packages:
+##'  
+##'-Calculations from a bam file with SeqData
+##'
+##'-Interface tables to flowCore with SeqFrame
+##'
+##'-Graphical interface for visualization and gating with SeqViz
+##'
+##'Each package has its own help manual, use ?(packageName) to see package specific help (e.g. ?SeqData). 
+##'
+##'SeqFrame is isolated as an separate package as it is functionally independent with SeqData for basic computation or SeqViz for pure graphical interface. It can interface a variaty of table like data into SeqFrame (see SeqFrame help for details), the graphical interface currently support tables in csv format.
+##'
+##'For usage of SeqViz for basic functions, see a 15 min video tutorial (http://youtu.be/Zsv4LGTgdA0).
 
 ##' @seealso
 ##' See SeqFrame for interfacing more different type of data, and SeqData for more functions that is not implemented in the graphical interface.
