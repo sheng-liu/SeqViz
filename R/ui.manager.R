@@ -797,18 +797,18 @@ SeqViz=function(){
     
     appspace[DataPage.data.view]=DataPage.data.view
     
-    annotation.label=gtkLabel("Annotation_mm9")
+    annotation.label=gtkLabel("Merge&SamplingCSV")
     
     ## Annotation buttons
     
     annotation.button.table=gtkTable(rows=3, columns=3, homogeneous=T)
     
-    gene=gtkButton(label="Gene")
-    promoter=gtkButton(label="Promoter")
-    retro=gtkButton(label="Retrotransposons")
-    repeats=gtkButton(label="SimpleRepeats")
-    bins=gtkButton(label="Bins")
-    user=gtkButton(label="User")
+    gene=gtkButton(label="MergeCSV")
+    promoter=gtkButton(label="SampleCSV")
+    retro=gtkButton(label="")
+    repeats=gtkButton(label="")
+    bins=gtkButton(label="")
+    user=gtkButton(label="")
     
     annotation.button.table$attach(annotation.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
     

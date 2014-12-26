@@ -45,7 +45,7 @@ range.gate=function(action, window){
     ## mouse events   
     
     #xWindow=X11()
-    X11(width=4,height=4)
+    X11(width=4,height=4,type="Xlib")
     plot.new()
     # this plot.new is required as plot(eval(parse(text = f))) 
     # is not recoginized as a plot when put inside mouse event handlers
