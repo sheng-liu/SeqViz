@@ -57,7 +57,8 @@ options(device = "quartz")
 
 ##' @import flowCore
 ##' @import flowViz
-##' @import Biobase
+## @import Biobase
+##  @importFrom Biobase AnnotatedDataFrame
 ##' @import flowStats
 
 
@@ -797,7 +798,8 @@ SeqViz=function(){
     
     appspace[DataPage.data.view]=DataPage.data.view
     
-    annotation.label=gtkLabel("Merge&SamplingCSV")
+    annotation.label=gtkLabel("")
+    #annotation.label=gtkLabel("Merge&SamplingCSV")
     
     ## Annotation buttons
     
@@ -810,14 +812,14 @@ SeqViz=function(){
     bins=gtkButton(label="")
     user=gtkButton(label="")
     
-    annotation.button.table$attach(annotation.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
+    #annotation.button.table$attach(annotation.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
     
-    annotation.button.table$attach(gene, left.attach = 0,1, top.attach = 1,2)
-    annotation.button.table$attach(promoter, left.attach = 1,2, top.attach = 1,2)
-    annotation.button.table$attach(retro, left.attach = 2,3, top.attach = 1,2)
-    annotation.button.table$attach(repeats, left.attach = 0,1, top.attach = 2,3)
-    annotation.button.table$attach(bins, left.attach = 1,2, top.attach = 2,3)
-    annotation.button.table$attach(user, left.attach = 2,3, top.attach = 2,3)
+    #annotation.button.table$attach(gene, left.attach = 0,1, top.attach = 1,2)
+    #annotation.button.table$attach(promoter, left.attach = 1,2, top.attach = 1,2)
+    #annotation.button.table$attach(retro, left.attach = 2,3, top.attach = 1,2)
+    #annotation.button.table$attach(repeats, left.attach = 0,1, top.attach = 2,3)
+    #annotation.button.table$attach(bins, left.attach = 1,2, top.attach = 2,3)
+    #annotation.button.table$attach(user, left.attach = 2,3, top.attach = 2,3)
     
     
     # PlotPage.leftPane$packStart(child=plot.data.label,expand=F,fill=F,padding=0)
