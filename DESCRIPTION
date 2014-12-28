@@ -9,3 +9,5 @@ Description: Graphical interface, epigenome data analysis and pattern
     recognition through visulization. A sequencing data exploratory tool build
     by bench scientist and for bench scientist.
 License: Artistic-2.0
+Depends:
+    SeqData,SeqFrame

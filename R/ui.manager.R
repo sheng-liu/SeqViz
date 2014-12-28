@@ -57,10 +57,9 @@ options(device = "quartz")
 
 ##' @import flowCore
 ##' @import flowViz
-## @import Biobase
-##  @importFrom Biobase AnnotatedDataFrame
 ##' @import flowStats
-
+## @import Biobase
+## @importFrom Biobase AnnotatedDataFrame
 
 
 library(SeqData)
