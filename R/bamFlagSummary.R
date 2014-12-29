@@ -1,5 +1,5 @@
 
-# bamFlageSummary
+# bamFlagSummary
 # add a progress bar to this function
 library(SeqData)
 

@@ -62,8 +62,8 @@ range.gate=function(action, window){
             eval(parse(text=f))
             abline(v=x.cord,col="cornflowerblue")
             
-            cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
-            cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
+            #cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
+            #cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
             appspace[x.cord.ini]=x.cord
             NULL
         }
@@ -85,9 +85,8 @@ range.gate=function(action, window){
         
         appspace[x.cord.end]=x.cord
         
-        cat("moves ", paste(buttons, collapse=" "), " at ", x, y, "\n")
-        cat("convert ", paste(buttons, collapse=" "), 
-            " at ", x.cord, y.cord, "\n")
+        #cat("moves ", paste(buttons, collapse=" "), " at ", x, y, "\n")
+        #cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
         NULL
         
     }
@@ -103,10 +102,11 @@ range.gate=function(action, window){
     #         }
     #     }
     
-    getGraphicsEvent("Click and drag to draw rangeGate",
-                     onMouseDown = mousedown,
-                     onMouseMove = mousemove
-                     #                      onKeybd = keybd
+    getGraphicsEvent(
+        "\nLeft click and drag to draw gate \nRight click to finish\n\nClick SavePDF to save current gating window\nClose the current gating window before open a new one\n",
+        onMouseDown = mousedown,
+        onMouseMove = mousemove
+        #                      onKeybd = keybd
     ) 
     
     
@@ -128,6 +128,7 @@ range.gate=function(action, window){
     appspace[filterBox]=rangeGate.filter
     
     print(summary(rangeGate.filter))
+    cat("\n")
     
     rangeGate.split=split(appspace[active.SeqFrame],rangeGate)
     child.node.name=sapply(rangeGate.split,function(frames){
@@ -136,7 +137,7 @@ range.gate=function(action, window){
     
     ## add the veggi name for now
     for (i in 1:length(child.node.name)) keyword(rangeGate.split[[i]])$VEGGI.NAME=child.node.name[i]
-
+    
     # put result seqframes into SeqFrame.list
     sapply(seq_along(child.node.name),function(i){
         appspace[SeqFrame.list][[child.node.name[i]]]=rangeGate.split[[i]]})

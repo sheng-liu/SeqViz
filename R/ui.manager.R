@@ -105,9 +105,11 @@ SeqViz=function(){
     
     
     ##==========================================================================
-    ## Implementing callbacks
+    ## Implementing callbacks (actions)
+    ##==========================================================================
     
     
+    ## -------------------------------------------------------------------------
     ## file group
     ## Open_Bam
     
@@ -271,9 +273,6 @@ SeqViz=function(){
             # use selected node to set the active SeqFrame
             # selected.node(appspace[active.view])
             
-            
-            
-            
             insert.node(node.name=data.name,
                         tree.view=PlotPage.node.view,
                         method="append")
@@ -304,13 +303,15 @@ SeqViz=function(){
             button2_label="gtk-save", button2_response=GtkResponseType["accept"])
         
         if(dialog$run()==GtkResponseType["accept"]){
-            file.name=paste(dialog$getFilename(),".csv",sep="")
-            cat("CSV file saved to ",file.name,"\n")
+            
             # update selected.node
             selected.node(appspace[active.view])
             # save only active.seqFram
             sf.table=SeqFrame.table(appspace[active.SeqFrame])
+            file.name=paste(dialog$getFilename(),".csv",sep="")
+            cat("\nCSV file saved to ",file.name,"\n")
             write.csv(file=file.name,sf.table,row.names=F)
+            
             dialog$destroy()
         }
         
@@ -333,7 +334,7 @@ SeqViz=function(){
         if (dialog$run()==GtkResponseType["accept"]) {
             
             file.name=paste(dialog$getFilename(),".pdf",sep="")
-            cat("PDF file saved to ",file.name,"\n")
+            cat("\nPDF file saved to ",file.name,"\n")
             dev.copy2pdf(file = file.name)
             dialog$destroy()
             
@@ -343,6 +344,7 @@ SeqViz=function(){
         
         
     }
+    
     
     
     ## open_bigWig
@@ -355,8 +357,9 @@ SeqViz=function(){
     
     
     ## -------------------------------------------------------------------------
-    ## Demo
-    Demo=function(widget,window) {
+    ## Demo group
+    ## Demo_CSV
+    Demo_CSV=function(widget,window) {
         # code copy from Open_CSV(), see logic there
         file=system.file("extdata", "Demo.csv",package = "SeqViz")
         sf=file2sf(file)
@@ -390,33 +393,109 @@ SeqViz=function(){
     
     
     ## -------------------------------------------------------------------------
+    ## Demo_Bam
+    Demo_Bam=function(widget,window) {
+        # code copy from Open_CSV(), see logic there
+        file=system.file("extdata", "ChrY.bam",package = "SeqData")
+        data.name=basename(file)
+        
+        ## put bamFile into bamFile.list
+        model=appspace[DataPage.data.view]$getModel()
+        length.tree.view=model$iterNChildren()
+        if(length.tree.view==0){
+            appspace[bamFile.list]=list()}
+        
+        
+            # set the name of the bamFile.list
+            appspace[bamFile.list][data.name]=data.name 
+            # fill in the content
+            appspace[bamFile.list][[data.name]]=file
+            # set active.SeqFrame to inserted bamFile
+            cat("active.bamFile set to inserted bamFile ",data.name,"\n")
+            appspace[active.bamFile]=file
+            
+            # insert.node
+            insert.node(node.name=data.name,
+                        tree.view=DataPage.data.view,
+                        method="append")
+    }    
+    
+    ## -------------------------------------------------------------------------
+    Demo_Annotation=function(widget,window) {
+        
+        file=system.file("extdata","refGene.csv",package ="SeqData")
+        data.name=basename(file)
+        
+        ## put annotationFile into annotationFile.list
+        model=appspace[DataPage.anno.view]$getModel()
+        length.tree.view=model$iterNChildren()
+        if(length.tree.view==0){
+            appspace[annotationFile.list]=list()
+        }
+        
+        
+        # set the name of the annotationFile.list
+        appspace[annotationFile.list][data.name]=data.name 
+        # fill in the content
+        appspace[annotationFile.list][[data.name]]=file
+        # set active.SeqFrame to inserted annotationFile
+        cat("active.annotationFile set to inserted annotationFile ",data.name,"\n")
+        appspace[active.annotationFile]=file
+        
+        # insert.node
+        insert.node(node.name=data.name,
+                    tree.view=DataPage.anno.view,
+                    method="append")
+        
+    }
+    ## -------------------------------------------------------------------------
+    Demo_BaseCall=function(widget,window) {
+        
+        file=system.file("extdata","chrY_mC.csv",package="SeqData")
+        data.name=basename(file)
+        
+        ## put bamFile into bamFile.list
+        model=appspace[DataPage.data.view]$getModel()
+        length.tree.view=model$iterNChildren()
+        if(length.tree.view==0){
+            appspace[bamFile.list]=list()}
+            
+            # set the name of the bamFile.list
+            appspace[bamFile.list][data.name]=data.name 
+            # fill in the content
+            appspace[bamFile.list][[data.name]]=file
+            # set active.SeqFrame to inserted bamFile
+            cat("active.bamFile set to inserted bamFile ",data.name,"\n")
+            appspace[active.bamFile]=file
+            
+            # insert.node
+            insert.node(node.name=data.name,
+                        tree.view=DataPage.data.view,
+                        method="append")
+    }    
+    
+    ## -------------------------------------------------------------------------
     ## tool group
-    UnDo=function(action,...) 
-        statusbar$push(statusbar$getContextId("message"), 
-                       action$getName())
-    
-    Redo=function(action,...) 
-        statusbar$push(statusbar$getContextId("message"), 
-                       action$getName())
-    
-    Preference=function(action,...) 
-        statusbar$push(statusbar$getContextId("message"), 
-                       action$getName())
-    
-    DataSummary=function(action,...) 
-        statusbar$push(statusbar$getContextId("message"), 
-                       action$getName())
-    
-    
-    GetMeasure=function(action,...) 
-        statusbar$push(statusbar$getContextId("message"), 
-                       action$getName())
-    
-    
-    
-    
-    
-    
+    #     UnDo=function(action,...) 
+    #         statusbar$push(statusbar$getContextId("message"), 
+    #                        action$getName())
+    #     
+    #     Redo=function(action,...) 
+    #         statusbar$push(statusbar$getContextId("message"), 
+    #                        action$getName())
+    #     
+    #     Preference=function(action,...) 
+    #         statusbar$push(statusbar$getContextId("message"), 
+    #                        action$getName())
+    #     
+    #     DataSummary=function(action,...) 
+    #         statusbar$push(statusbar$getContextId("message"), 
+    #                        action$getName())
+    #     
+    #     
+    #     GetMeasure=function(action,...) 
+    #         statusbar$push(statusbar$getContextId("message"), 
+    #                        action$getName())
     
     ##--------------------------------------------------------------------------
     ## plot buttons group
@@ -435,8 +514,8 @@ SeqViz=function(){
                        action$getName())
     
     ##==========================================================================
-    ## defining the actions
-    
+    ## defining the actions (action groups)
+    ##==========================================================================
     # xml defines what icon to put into tool bar and menu bar
     
     
@@ -453,59 +532,78 @@ SeqViz=function(){
         open_csv = list("Open_CSV", "gtk-open", "Open_CSV", NULL, "Open CSV File", Open_CSV),
         save_csv = list("Save_CSV", "gtk-save", "Save_CSV", "<alt>S", "Save CSV File", Save_CSV),
         save_pdf = list("Save_PDF", "gtk-save", "Save_PDF", "<ctrl>S", "Save PDF File", Save_PDF),
-        quit = list("Quit", "gtk-quit", "_Quit", "<ctrl>Q", "Quit", Quit),
+        quit = list("Quit", "gtk-quit", "_Quit", "<ctrl>Q", "Quit", Quit)
         
-        edit = list("Edit", NULL, "Edit", NULL, NULL, NULL),
-        undo = list("Undo", "gtk-undo", "_Undo", "<ctrl>Z",  "Undo change", UnDo),
-        redo = list("Redo", "gtk-redo", "_Redo", "<ctrl>U", "Redo change", Redo)
+        #         edit = list("Edit", NULL, "Edit", NULL, NULL, NULL),
+        #         undo = list("Undo", "gtk-undo", "_Undo", "<ctrl>Z",  "Undo change", UnDo),
+        #         redo = list("Redo", "gtk-redo", "_Redo", "<ctrl>U", "Redo change", Redo)   
     )
     
     fileActionGroup$addActions(entries=fileActionEntries,user.data=main_window)
+    ##--------------------------------------------------------------------------
+    #     # toolActionGroup
+    #     toolActionGroup=gtkActionGroup(name="toolActionGroup")
+    #     
+    #     toolActionEntries=list(  # name,ID,label,accelerator,tooltip,callback
+    #         
+    #         tool=list("Tools",NULL,"Tools",NULL,NULL,NULL),
+    #         preference=list("Preference",NULL,"Preference",NULL,"Set Computation Preference",Preference),
+    #         
+    #         data_summary=list("DataSummary",NULL,"DataSummary",NULL,"Sequencing Data Summary",DataSummary),
+    #         get_measure=list("GetMeasure",NULL,"GetMeasure",NULL,"Sequencing Data Summary",DataSummary),
+    #         
+    #         gate = list("Gate", NULL, "Gate", NULL, NULL, NULL),
+    #         polygon_gate=list("PolygonGate",NULL,"PolygonGate",NULL,"Polygon Gate",PolygonGate),
+    #         rectangle_gate=list("RectangleGate",NULL,"RectangleGate",NULL,"Rectangle Gate",RectangleGate),
+    #         
+    #         plot = list("Plot", NULL, "Plot", NULL, NULL, NULL),
+    #         countour_plot=list("CountourPlot",NULL,"CountourPlot",NULL,"Countour Plot",CountourPlot),
+    #         histogram_plot=list("HistogramPlot",NULL,"HistogramPlot",NULL,"Histogram Plot",HistogramPlot)
+    #         
+    #     )
     
-    # toolActionGroup
-    toolActionGroup=gtkActionGroup(name="toolActionGroup")
+    #     toolActionGroup$addActions(entries=toolActionEntries,user.data=main_window)
     
-    toolActionEntries=list(  # name,ID,label,accelerator,tooltip,callback
-        
-        tool=list("Tools",NULL,"Tools",NULL,NULL,NULL),
-        preference=list("Preference",NULL,"Preference",NULL,"Set Computation Preference",Preference),
-        
-        data_summary=list("DataSummary",NULL,"DataSummary",NULL,"Sequencing Data Summary",DataSummary),
-        get_measure=list("GetMeasure",NULL,"GetMeasure",NULL,"Sequencing Data Summary",DataSummary),
-        
-        gate = list("Gate", NULL, "Gate", NULL, NULL, NULL),
-        polygon_gate=list("PolygonGate",NULL,"PolygonGate",NULL,"Polygon Gate",PolygonGate),
-        rectangle_gate=list("RectangleGate",NULL,"RectangleGate",NULL,"Rectangle Gate",RectangleGate),
-        
-        plot = list("Plot", NULL, "Plot", NULL, NULL, NULL),
-        countour_plot=list("CountourPlot",NULL,"CountourPlot",NULL,"Countour Plot",CountourPlot),
-        histogram_plot=list("HistogramPlot",NULL,"HistogramPlot",NULL,"Histogram Plot",HistogramPlot)
-        
-    )
-    
-    toolActionGroup$addActions(entries=toolActionEntries,user.data=main_window)
-    
-    
+    ##--------------------------------------------------------------------------
     helpActionGroup <- gtkActionGroup(name="helpActionGroup")
     helpActionEntries <- list(  # name,ID,label,accelerator,tooltip,callback
-        demo=list("Demo","","Demo",NULL,"Load Demo Data",Demo),
-        help = list("Help", "", "Help", NULL, "Open Help Doc", NULL),
+        help = list("Help",NULL,"Help",NULL,NULL,NULL),
+        vignette = list("Vignette", "gtk-help", "Vignette", NULL, "Vignette", NULL),
         about = list("About", "gtk-about", "About", NULL, "About SeqViz", 
                      NULL)
     )
     #helpActionGroup$addActions(helpActionEntries)
     helpActionGroup$addActions(entries=helpActionEntries,user.data=main_window)
     
+    ##--------------------------------------------------------------------------
+    #demo action group
+    demoActionGroup <- gtkActionGroup(name="demoActionGroup")
+    demoActionEntries <- list(  # name,ID,label,accelerator,tooltip,callback
+        
+        demoBam=list("Demo_Bam","gtk-file","Demo_Bam",NULL,
+                     "Load Demo Bam Data",Demo_Bam),
+        demoBaseCall=list("Demo_BaseCall","gtk-file","Demo_BaseCall",NULL,
+                          "Load Demo BaseCall Data",Demo_BaseCall),
+        demoAnnotation=list("Demo_Annotation","gtk-file","Demo_Annotation",NULL,
+                            "Load Demo Annotation Data",Demo_Annotation),
+        demoCSV=list("Demo_CSV","gtk-file","Demo_CSV",NULL,
+                     "Load Demo CSV Data",Demo_CSV)
+    )
+    demoActionGroup$addActions(entries=demoActionEntries,user.data=main_window)
     
     
+    ##--------------------------------------------------------------------------
     #insert the action group into the UI manager
     uimanager$insertActionGroup(fileActionGroup,0)
-    uimanager$insertActionGroup(toolActionGroup,0)
+    #uimanager$insertActionGroup(toolActionGroup,0)
     uimanager$insertActionGroup(helpActionGroup,0)
+    uimanager$insertActionGroup(demoActionGroup,0)
+    
+    
     
     ##==========================================================================
     ## Defining UI layout
-    
+    ##==========================================================================
     xml=system.file("etc", "SeqViz-menu.xml",package = "SeqViz")
     
     id =  uimanager$addUiFromFile(xml)
@@ -1041,7 +1139,7 @@ SeqViz=function(){
     gSignalConnect(obj=range.gate.button, signal="clicked", f=range.gate)    
     gSignalConnect(obj=rectangle.gate.button, signal="clicked", f=rectangle.gate)
     
-   
+    
     # connect key-press-event with view
     # gSignalConnect(PlotPage.node.view, "key-press-event", delete.node) 
     gSignalConnect(

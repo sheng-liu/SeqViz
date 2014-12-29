@@ -25,8 +25,8 @@ rectangle.gate=function(action,window){
             x.cord=grconvertX(x,from="ndc",to="user")
             y.cord=grconvertY(y,from="ndc",to="user")
             
-            cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
-            cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
+            #cat("Buttons ", paste(buttons, collapse=" "), " at ", x, y, "\n")
+            #cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
             
             appspace[x.cord.ini]=x.cord
             appspace[y.cord.ini]=y.cord
@@ -50,8 +50,8 @@ rectangle.gate=function(action,window){
         appspace[x.cord.end]=x.cord
         appspace[y.cord.end]=y.cord
         
-        cat("moves ", paste(buttons, collapse=" "), " at ", x, y, "\n")
-        cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
+        #cat("moves ", paste(buttons, collapse=" "), " at ", x, y, "\n")
+        #cat("convert ", paste(buttons, collapse=" "), " at ", x.cord, y.cord, "\n")
         NULL
         
     }
@@ -67,10 +67,11 @@ rectangle.gate=function(action,window){
     #         }  
     #     }
     
-    getGraphicsEvent("Click and drag to draw rectangeGate",
-                     onMouseDown = mousedown,
-                     onMouseMove = mousemove
-                     #onKeybd = keybd
+    getGraphicsEvent(
+        "\nLeft click and drag to draw gate \nRight click to finish\n\nClick SavePDF to save current gating window\nClose the current gating window before open a new one\n",
+        onMouseDown = mousedown,
+        onMouseMove = mousemove
+        #onKeybd = keybd
     ) 
     
     ##--------------------------------------------------------------------------
@@ -88,13 +89,14 @@ rectangle.gate=function(action,window){
     appspace[filterBox]=rectGate.filter
     
     print(summary(rectGate.filter))
-
+    cat("\n")
+    
     rectGate.split=split(appspace[active.SeqFrame],rectGate)
     
-
-child.node.name=sapply(rectGate.split,
-                       function(frames){keyword(frames)$GUID})    
-
+    
+    child.node.name=sapply(rectGate.split,
+                           function(frames){keyword(frames)$GUID})    
+    
     ## add the veggi name for now
     for (i in 1:length(child.node.name)) 
         keyword(rectGate.split[[i]])$VEGGI.NAME=child.node.name[i]

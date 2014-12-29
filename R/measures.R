@@ -1,5 +1,7 @@
 ## Callbacks for the DataPage
 
+## change name to count
+
 ## getMeasure
 ## countReads (RNAseq)
 ## getReadCoverage (ChIPseq)
@@ -19,7 +21,12 @@ get.measure=function(widget,window){
     switch(appspace[measureType],
            "getReadCoverage"={viewCoverage(sd)},
            "countReads"={countReads(sd)},
-           "cytosineMethylation"={}
+           "cytosineMethylation"={
+               ## as of version 1, only support baseReport
+               summarizeBases(annotationFile=annotationFile(sd),
+                              baseReport=bamFile(sd))
+       
+           }
            )
     
     

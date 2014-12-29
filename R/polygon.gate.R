@@ -22,8 +22,10 @@ polygon.gate=function(action,window) {
              plotParameters=c(appspace[channelX],appspace[channelY]))
     
     # gate
+    cat("\nLeft click to draw gate \nRight click to finish\n\nClick SavePDF to save current gating window\nClose the current gating window before open a new one\n")
     location <- locator(n =512, type = "o")
     location.df=data.frame(location$x,location$y)
+    
     
     
     # if use quartz() would have saved this 
@@ -55,7 +57,7 @@ polygon.gate=function(action,window) {
     appspace[filterBox]=polygonGate.filter
     
     print(summary(polygonGate.filter))
-    
+    cat("\n")
     
     polygonGate.split=split(appspace[active.SeqFrame],polygonGate)
     

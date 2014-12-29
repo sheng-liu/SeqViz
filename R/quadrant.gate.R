@@ -76,14 +76,14 @@ quadrant.gate=function(action, window){
             ## use a list to collect all user selections
             ## ouput the second last
             
-            cat("user.x=",appspace[user.x],"\t")
-            cat("user.y=",appspace[user.y],"\n")
+            #cat("user.x=",appspace[user.x],"\t")
+            #cat("user.y=",appspace[user.y],"\n")
             NULL
         } 
     }
     
     getGraphicsEvent(
-        "Click mouse to draw quadrant gate \nClick OK button to finish",
+        "\nLeft click to draw gate \nRight click to finish\n\nClick SavePDF to save current gating window\nClose the current gating window before open a new one\n",
         onMouseDown=mousedown
     )
     
@@ -103,8 +103,7 @@ quadrant.gate=function(action, window){
     appspace[filterBox]=quadGate.filter
     
     print(summary(quadGate.filter))
-    
-    
+    cat("\n")
     
     
     

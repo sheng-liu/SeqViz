@@ -15,6 +15,7 @@ insert.node=function(node.name,tree.view,method=c("insert","append")){
     parent.iter=if (method=="append") NULL else 
         tree.view$getSelection()$getSelected()$iter 
     
+    cat("\nChild nodes:\n")
     # add new row(s), correspond to parent.iter
     for (i in 1:length(node.name)) {
         
@@ -38,7 +39,9 @@ insert.node=function(node.name,tree.view,method=c("insert","append")){
     }    
     
     # output a signal
-    cat(method," node(s) ",node.name," to ",deparse(substitute(tree.view)),"\n")
+    #cat(method," node(s):\n",node.name,"\nto:\n",deparse(substitute(tree.view)),"\n")
+    # since node.name has printed out in the above loop
+    cat(method," to ",deparse(substitute(tree.view)),"\n")
     return(tree.view)
     
 }
