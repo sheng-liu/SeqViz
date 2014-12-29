@@ -224,8 +224,14 @@ select.all.child.node=function(tree.view,itself=T){
 ## connects gtkTreeStore
 
 ## gtkTreeStoreRemove(object, iter)
+
 # view is gtkTreeView
 # event is key-press-event
+
+# these list approach doesnt work
+# list is character, c("bamFile.list","SeqFrame.list","annotationFile.list")
+# list is appspace list   appspace[bamFileList],appspace[SeqFrame.list],appspace[annotation.list]
+
 ##' @export delete.node
 delete.node=function(view,event){
     key <- event[["keyval"]]
@@ -238,19 +244,34 @@ delete.node=function(view,event){
         
         model=view$getModel()
         
-        # a helper for knowing the function
+
+        # get selected.node.name from corresponding view that is operating
         selected.node.name=model$get(iter=iter$iter,column=0)[[1]]
         
+ 
         # remove the corresponding nodes in the appspace
-        #rm(list=selected.node.name,envir=.AppEnv)
-        #cat(selected.node.name,"deleted\n")
-        
+        # try subset based on name doesn't work, and gConnect doesnt allow pass in new variable
+        #appspacelist[selected.node.name]=NULL
+        # betting bamFile, annotationFile and SeqFrameFile won't have the same name
+        # makes coding much more simple
+    
         # remove the corresponding nodes from SeqFrame.list
-        appspace[SeqFrame.list][selected.node.name]=NULL 
+        if(exists("SeqFrame.list",envir=.AppEnv)){
+            appspace[SeqFrame.list][selected.node.name]=NULL 
+        }
         
-        #appspace[bamFile.list][selected.node.name]=NULL
+        if(exists("bamFile.list",envir=.AppEnv)){
+            appspace[bamFile.list][selected.node.name]=NULL 
+        }
         
-        #appspace[annotationFile.list][selected.node.name]=NULL
+        if(exists("annotationFile.list",envir=.AppEnv)){
+            appspace[annotationFile.list][selected.node.name]=NULL
+        }
+        
+        cat(selected.node.name,"deleted\n")
+        
+     
+        
         # redo function can work somewhere here
 #         if (undo==T){
 #             insert.node()
@@ -263,6 +284,8 @@ delete.node=function(view,event){
     }
     
 }
+
+
 
 
 # > x

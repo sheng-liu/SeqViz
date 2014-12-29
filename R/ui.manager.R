@@ -406,18 +406,18 @@ SeqViz=function(){
             appspace[bamFile.list]=list()}
         
         
-            # set the name of the bamFile.list
-            appspace[bamFile.list][data.name]=data.name 
-            # fill in the content
-            appspace[bamFile.list][[data.name]]=file
-            # set active.SeqFrame to inserted bamFile
-            cat("active.bamFile set to inserted bamFile ",data.name,"\n")
-            appspace[active.bamFile]=file
-            
-            # insert.node
-            insert.node(node.name=data.name,
-                        tree.view=DataPage.data.view,
-                        method="append")
+        # set the name of the bamFile.list
+        appspace[bamFile.list][data.name]=data.name 
+        # fill in the content
+        appspace[bamFile.list][[data.name]]=file
+        # set active.SeqFrame to inserted bamFile
+        cat("active.bamFile set to inserted bamFile ",data.name,"\n")
+        appspace[active.bamFile]=file
+        
+        # insert.node
+        insert.node(node.name=data.name,
+                    tree.view=DataPage.data.view,
+                    method="append")
     }    
     
     ## -------------------------------------------------------------------------
@@ -459,19 +459,19 @@ SeqViz=function(){
         length.tree.view=model$iterNChildren()
         if(length.tree.view==0){
             appspace[bamFile.list]=list()}
-            
-            # set the name of the bamFile.list
-            appspace[bamFile.list][data.name]=data.name 
-            # fill in the content
-            appspace[bamFile.list][[data.name]]=file
-            # set active.SeqFrame to inserted bamFile
-            cat("active.bamFile set to inserted bamFile ",data.name,"\n")
-            appspace[active.bamFile]=file
-            
-            # insert.node
-            insert.node(node.name=data.name,
-                        tree.view=DataPage.data.view,
-                        method="append")
+        
+        # set the name of the bamFile.list
+        appspace[bamFile.list][data.name]=data.name 
+        # fill in the content
+        appspace[bamFile.list][[data.name]]=file
+        # set active.SeqFrame to inserted bamFile
+        cat("active.bamFile set to inserted bamFile ",data.name,"\n")
+        appspace[active.bamFile]=file
+        
+        # insert.node
+        insert.node(node.name=data.name,
+                    tree.view=DataPage.data.view,
+                    method="append")
     }    
     
     ## -------------------------------------------------------------------------
@@ -1118,6 +1118,14 @@ SeqViz=function(){
                    targets=targetentries, 
                    actions="copy")
     
+    # test highlight rows, as it is not easy to locate which row the drop is on, some times gives (unknown enum) errors if it is in the middle of two row.
+    
+    gtkTreeViewEnableModelDragDest(obj=DataPage.data.view, 
+                                   targets=targetentries, 
+                                   actions="copy")
+    
+    
+    
     
     
     ## -------------------------------------------------------------------------
@@ -1141,16 +1149,19 @@ SeqViz=function(){
     
     
     # connect key-press-event with view
-    # gSignalConnect(PlotPage.node.view, "key-press-event", delete.node) 
+    # gSignalConnect(PlotPage.node.view, "key-press-event", delete.node)
+    
+    # adding variable doesn't work
+    #     gSignalConnect(
+    #         obj=appspace[active.view], signal="key-press-event", f=delete.node(event,view=appspace[active.view],appspacelist=appspace[SeqFrame.list]))
+    
     gSignalConnect(
         obj=appspace[active.view], signal="key-press-event", f=delete.node)
     
     gSignalConnect(
-        obj=appspace[DataPage.data.view], 
-        signal="key-press-event", f=delete.node)
+        obj=appspace[DataPage.data.view], signal="key-press-event", f=delete.node)
     gSignalConnect(
-        obj=appspace[DataPage.anno.view], 
-        signal="key-press-event", f=delete.node)
+        obj=appspace[DataPage.anno.view], signal="key-press-event", f=delete.node)
     
     
     gSignalConnect(obj=get.measure.button, signal="clicked", f=get.measure)
