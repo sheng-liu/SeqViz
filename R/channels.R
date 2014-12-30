@@ -50,10 +50,10 @@ select.channels=function(channelY=T,channelZ=F){
     
     
     # determine active.SeqFrame with selection by the user
-    selected.node(appspace[active.view])
+    selected.node(appspace[SeqFrame.hierachy.view])
     active.SeqFrame=appspace[active.SeqFrame]
     
-    #     selected.node=selected.node.name(appspace[active.view])
+    #     selected.node=selected.node.name(appspace[SeqFrame.hierachy.view])
     #     active.SeqFrame=get(selected.node,envir=.AppEnv)
     #     appspace[active.SeqFrame]=active.SeqFrame
     

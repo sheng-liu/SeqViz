@@ -84,7 +84,7 @@ polygon.gate=function(action,window) {
     
     
     insert.node(
-        node.name=child.node.name,tree.view=appspace[active.view],method="insert")
+        node.name=child.node.name,tree.view=appspace[SeqFrame.hierachy.view],method="insert")
      
 }
 

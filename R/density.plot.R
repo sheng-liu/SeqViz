@@ -17,11 +17,11 @@ density.plot=function(action, window){
     # lets first implement the flowViz version, as it is easy to add up checked channels
     # make it easier for now, always plot the parent, latter can add a button to switch
     # make the flowSet
-    model=appspace[active.view]$getModel()
+    model=appspace[SeqFrame.hierachy.view]$getModel()
     
     #     # select node's parent node and form a flowSet
-    #     selected.node=selected.node(appspace[active.view])
-    #     parent.node=select.ajacent.node(appspace[active.view],up=T)
+    #     selected.node=selected.node(appspace[SeqFrame.hierachy.view])
+    #     parent.node=select.ajacent.node(appspace[SeqFrame.hierachy.view],up=T)
     #     
     #     # data=list(appspace[selected.node],appspace[parent.node])
     #     child=get(x=selected.node,envir=.AppEnv)
@@ -33,9 +33,9 @@ density.plot=function(action, window){
     
     
     ## try use select.all.child.node to construct fs
-    selected.node=selected.node(appspace[active.view])
-    all.child.node=select.all.child.node(appspace[active.view])
-    parent.node=select.parent.node(appspace[active.view])
+    selected.node=selected.node(appspace[SeqFrame.hierachy.view])
+    all.child.node=select.all.child.node(appspace[SeqFrame.hierachy.view])
+    parent.node=select.parent.node(appspace[SeqFrame.hierachy.view])
     
     # data=list(appspace[selected.node],appspace[parent.node])
     #parent.frame=get(x=parent.node,envir=.AppEnv)
@@ -84,7 +84,7 @@ density.plot=function(action, window){
     checked.channels.name=appspace[checked.channels]
     channels=paste(checked.channels.name,collapse="`+`")
     
-    #selected.node(appspace[active.view])
+    #selected.node(appspace[SeqFrame.hierachy.view])
     
     # dat=appspace[active.SeqFrame]
     dat=fs

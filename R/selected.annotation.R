@@ -14,7 +14,7 @@
 selected.annotation=function(tree.view,path,col,browser=T){
     
     # get the selected node's id
-    # selected.node(appspace[active.table.view],setActive=F) # also work
+    # selected.node(appspace[SeqFrame.table.view],setActive=F) # also work
     # selected.node(tree.view,setActive=F)
    
     selection=tree.view$getSelection()

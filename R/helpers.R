@@ -5,8 +5,8 @@
 ##' @export selected.method
 selected.method=function(widget,window){
     # if checkButton's "active, return their name to a vector
-    check.list=lapply(appspace[count.method.list],function(x) x["active"])
-    #count.method.list[[2]]["active"]
+    check.list=lapply(appspace[count.method],function(x) x["active"])
+    #count.method[[2]]["active"]
     checked=unlist(check.list)
     count.method.name=names(checked)[checked==T]
     print(count.method.name)

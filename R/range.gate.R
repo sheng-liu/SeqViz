@@ -22,8 +22,8 @@ range.gate=function(action, window){
     
     ## let's first deal with there is only one channel selected
     
-    model=appspace[active.view]$getModel()
-    selected.node=selected.node(appspace[active.view])
+    model=appspace[SeqFrame.hierachy.view]$getModel()
+    selected.node=selected.node(appspace[SeqFrame.hierachy.view])
     
     #selected.frame=get(x=selected.node,envir=.AppEnv)
     selected.frame=appspace[active.SeqFrame]
@@ -144,7 +144,7 @@ range.gate=function(action, window){
     
     # insert child.node.name
     insert.node(
-        node.name=child.node.name,tree.view=appspace[active.view],method="insert")
+        node.name=child.node.name,tree.view=appspace[SeqFrame.hierachy.view],method="insert")
     
     # update infor 
     PlotPage.info.model <- rGtkDataFrame (exprs(appspace[active.SeqFrame]))

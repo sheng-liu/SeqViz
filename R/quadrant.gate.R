@@ -6,7 +6,7 @@ quadrant.gate=function(action, window){
     print("Quadrant Gate")
     
     # update selected.node and active.SeqFrame
-    # selected.node(appspace[active.view])
+    # selected.node(appspace[SeqFrame.hierachy.view])
     
     select.channels()
     
@@ -137,7 +137,7 @@ quadrant.gate=function(action, window){
     
     
     insert.node(
-        node.name=child.node.name,tree.view=appspace[active.view],method="insert")
+        node.name=child.node.name,tree.view=appspace[SeqFrame.hierachy.view],method="insert")
     
     
 }

@@ -27,12 +27,12 @@ scatter.plot=function(action,window){
     ## kind of like a stacked 
     ## make the flowSet
     
-    # model=appspace[active.view]$getModel()
+    # model=appspace[SeqFrame.hierachy.view]$getModel()
     
     # select node's parent node and form a flowSet
-    selected.node=selected.node(appspace[active.view])
-    all.child.node=select.all.child.node(appspace[active.view],itself=T)
-    parent.node=select.parent.node(appspace[active.view],itself=F)
+    selected.node=selected.node(appspace[SeqFrame.hierachy.view])
+    all.child.node=select.all.child.node(appspace[SeqFrame.hierachy.view],itself=T)
+    parent.node=select.parent.node(appspace[SeqFrame.hierachy.view],itself=F)
     
     #     parent.frames=lapply(parent.node,function(node.name){
     #         # get(x=node.name,envir=.AppEnv)

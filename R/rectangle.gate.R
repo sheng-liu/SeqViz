@@ -107,7 +107,7 @@ rectangle.gate=function(action,window){
         appspace[SeqFrame.list][[child.node.name[i]]]=rectGate.split[[i]]})
     
     insert.node(
-        node.name=child.node.name,tree.view=appspace[active.view],method="insert")
+        node.name=child.node.name,tree.view=appspace[SeqFrame.hierachy.view],method="insert")
     
 }
 

@@ -46,9 +46,9 @@ insert.node=function(node.name,tree.view,method=c("insert","append")){
     
 }
 
-# test
-# insert.node(node.name=c("abc","bcd"),tree.view=appspace[active.view],method="append")
-# insert.node(node.name=c("abc","bcd"),tree.view=appspace[active.view],method="insert")
+# test script
+# insert.node(node.name=c("abc","bcd"),tree.view=appspace[SeqFrame.hierachy.view],method="append")
+# insert.node(node.name=c("abc","bcd"),tree.view=appspace[SeqFrame.hierachy.view],method="insert")
 
 #parent$getModel()$iterNext(iter$iter) 
 
@@ -84,7 +84,7 @@ selected.node=function(tree.view,setActive=T){
 
 # may change the table.view also to this selelcted.node
 # put it in another function so it is easy to manipulate, more flexibility
-# update.table(df=exprs(appspace[active.SeqFrame]),table.view=appspace[active.table.view])
+# update.table(df=exprs(appspace[active.SeqFrame]),table.view=appspace[SeqFrame.table.view])
 # this need to be connected to click on the rows of the view via gSignal connect
 
 ##------------------------------------------------------------------------------
@@ -275,7 +275,7 @@ delete.node=function(view,event){
         # redo function can work somewhere here
 #         if (undo==T){
 #             insert.node()
-#             insert.node=function(node.name=selected.node.name,parent=appspace[active.view],loc="insert")
+#             insert.node=function(node.name=selected.node.name,parent=appspace[SeqFrame.hierachy.view],loc="insert")
 #         }
         
         
@@ -356,7 +356,7 @@ select.ajacent.node=function(tree.view,up=T){
 
 
 # determine active.SeqFrame with selection by the user
-# once the mouse clicked on, the active.view and active.model has to be reset to the selected one
+# once the mouse clicked on, the SeqFrame.hierachy.view and active.model has to be reset to the selected one
 # return selected node name
 
 
@@ -420,8 +420,8 @@ select.ajacent.node=function(tree.view,up=T){
 
 ## everywhere need a function to referen the selected name to underneath SeqFrame
 # return selected node name
-# selection=appspace[active.view]$getSelection()
+# selection=appspace[SeqFrame.hierachy.view]$getSelection()
 # iter=gtkTreeSelectionGetSelected(selection)
-# model=gtkTreeViewGetModel(appspace[active.view])
+# model=gtkTreeViewGetModel(appspace[SeqFrame.hierachy.view])
 # selected.node.name=model$get(iter=iter$iter,column=0)[[1]]
 
