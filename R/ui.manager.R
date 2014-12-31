@@ -1026,7 +1026,9 @@ SeqViz=function(){
     
     ## function 
     #count.method.label=gtkLabel("count method")
-    count.method.label=gtkLabel("")
+    # count.method.label=gtkLabel("Select count method, Drag&Drop annotation onto data to count")
+    #
+    count.method.label=gtkLabel("Drag&Drop annotation")
     ## TOD: use a frame surrounding the button and the radio button is a good way to inlcude this information
     
     
@@ -1074,6 +1076,7 @@ SeqViz=function(){
     function.button.table$attach(
         count.method[[3]], left.attach = 2,3, top.attach = 1,2)
     
+
     ## -------------------------------------------------------------------------
     ## add a spinner for fun
     # also shows progress 
@@ -1084,11 +1087,10 @@ SeqViz=function(){
     #    appspace[spinner]=spinner
     # function.button.table$attach(spinner, left.attach = 2,3, top.attach = 2,3)
     
-    
-    DataPage.rightPane$packStart(
-        child=count.method.label,expand=F,fill=F,padding=0)
     DataPage.rightPane$packStart(
         child=function.button.table,expand=F,fill=F,padding=0)
+    DataPage.rightPane$packStart(
+        child=count.method.label,expand=F,fill=F,padding=0)
     DataPage.rightPane$packEnd(
         child=DataPage.anno.scrolled.window,expand=T,fill=T,padding=0)
     
