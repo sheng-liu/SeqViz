@@ -3,18 +3,22 @@
         <menu name="FileMenu" action="File">
             <menuitem name="Open_Bam" action="Open_Bam"/>
             <menuitem name="Open_Annotation" action="Open_Annotation"/>
+            <separator />
             <menuitem name="Open_CSV" action="Open_CSV"/>
+            <separator />
             <menuitem name="Save_CSV" action="Save_CSV"/>
             <menuitem name="Save_PDF" action="Save_PDF"/>
             <separator />
-            <menuitem name="Quit_Clover" action="Quit"/>
+            <menuitem name="Quit" action="Quit"/>
         </menu>
         
         <menu name="HelpMenu" action="Help">
                 <menuitem action="Demo_Bam"/>
                 <menuitem action="Demo_Annotation"/>
                 <menuitem action="Demo_BaseCall"/>
+                <separator />
                 <menuitem action="Demo_CSV"/>
+                <separator />
                 <menuitem action="Vignette"/>
                 <menuitem action="About"/>
         </menu>
@@ -24,12 +28,12 @@
     <toolbar name="toolbar">
         <toolitem action="Open_Bam"/>
         <toolitem action="Open_Annotation"/>
+        <separator />
         <toolitem action="Open_CSV"/>
         <separator />
         <toolitem action="Save_CSV"/>
         <toolitem action="Save_PDF"/>
         <separator />
-        
     </toolbar>
 
 </ui>

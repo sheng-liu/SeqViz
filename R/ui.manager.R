@@ -1,66 +1,62 @@
 
 # SeqViz UImanager
 
+################################################################################
+
 ## -----------------------------------------------------------------------------
-## SeqViz 
+## SeqViz Roxygen help
 ##' @name SeqViz
 ##' @aliases SeqViz
 ##' @title SeqViz-graphical interface for epigenomic data exploration
 ##' @rdname SeqViz
 ##' @docType methods
-##' @description SeqViz is a graphical interface for visulization of epigenomic data. 
-
+##' @description SeqViz is a graphical interface for visulization of epigenomic
+##'   data.
 ##' @usage
 ##' SeqViz()
-## @param bamFie Full path to bam file (optional).
-## @param annotationFile Full path to annotation file (optional).
-##' @return a GTK+ graphical interface for simple epigenomic data computation and visulization 
-##' @details 
-##' SeqViz provide a graphical interface for epigenomic data visulization. It is implemented with GTK+ through rGTK+ package, its underlying computation is implemented by SeqData package for computations on bam file and SeqFrame package for interfacing tables to flowCore. SeqViz then utilize flowCore and flowViz for data subsetting and visulization.
-##'
-##'Organization of the three packages:
+##  @param bamFie Full path to bam file (optional).
+##  @param annotationFile Full path to annotation file (optional).
+##
+##' @return a GTK+ graphical interface for simple epigenomic data computation
+##'   and visulization
+##' @details SeqViz provide a graphical interface for epigenomic data 
+##'  visulization. It is implemented with GTK+ through rGTK+ package, its 
+##'  underlying computation is implemented by SeqData package for computations
+##'  on bam file and SeqFrame package for interfacing tables to flowCore. SeqViz
+##'  then utilize flowCore and flowViz for data subsetting and visulization.
 ##'  
-##'-Calculations from a bam file with SeqData
-##'
-##'-Interface tables to flowCore with SeqFrame
-##'
-##'-Graphical interface for visualization and gating with SeqViz
-##'
-##'Each package has its own help manual, use ?(packageName) to see package specific help (e.g. ?SeqData). 
-##'
-##'SeqFrame is isolated as an separate package as it is functionally independent with SeqData for basic computation or SeqViz for pure graphical interface. It can interface a variaty of table like data into SeqFrame (see SeqFrame help for details), the graphical interface currently support tables in csv format.
-##'
-##'For usage of SeqViz for basic functions, see a 15 min video tutorial (http://youtu.be/Zsv4LGTgdA0).
+##'  Organization of the three packages:
+##'  
+##'  -Calculations from a bam file with SeqData
+##'  
+##'  -Interface tables to flowCore with SeqFrame
+##'  
+##'  -Graphical interface for visualization and gating with SeqViz
+##'  
+##'  Each package has its own help manual, use ?(packageName) to see package 
+##'  specific help (e.g. ?SeqData).
+##'  
+##'  SeqFrame is isolated as an separate package as it is functionally
+##'  independent with SeqData for basic computation or SeqViz for pure graphical
+##'  interface. It can interface a variaty of table like data into SeqFrame (see
+##'  SeqFrame help for details), the graphical interface currently support
+##'  tables in csv format.
+##'  
+##'  For usage of SeqViz for basic functions, see a 15 min video tutorial 
+##'  (http://youtu.be/Zsv4LGTgdA0).
 
-##' @seealso
-##' See SeqFrame for interfacing more different type of data, and SeqData for more functions that is not implemented in the graphical interface.
-
-
-
-
-
-
-## TODO
-## add import UCSC tracks
-## clickable to UCSC browser
-
-# for better display on mac for now
-# Rstudio graphics not clear
-options(device = "quartz")
+##' @seealso See SeqFrame for interfacing more different type of data, and
+##' SeqData for more functions that is not implemented in the graphical
+##' interface.
 
 
 ##' @import RGtk2
 ##' @import SeqData
 ##' @import SeqFrame
 
-## these may not be needed as SeqFrame loaded them
-
 ##' @import flowCore
 ##' @import flowViz
 ##' @import flowStats
-## @import Biobase
-## @importFrom Biobase AnnotatedDataFrame
-
 
 library(SeqData)
 library(SeqFrame)
@@ -71,32 +67,16 @@ library(Biobase)
 library(flowStats)
 library(lattice) 
 library(ggplot2)
-# though flowViz load it, somehow it is not loaded when load the package
-
 
 
 ##' @export SeqViz
 SeqViz=function(){
     
-    # initialize active.SeqFrame
-    #file=system.file("extdata", "Initialize.csv",package = "SeqViz")
-    #sf=file2sf(file)
-    
-    #data.name=basename(file)
-    #keyword(sf)$VEGGI.NAME=data.name
-    #assign(x=data.name,value=sf,envir=.AppEnv)
-    
-    #appspace[active.SeqFrame]=sf      
-    
-    #df=read.csv(file=file,header=T,as.is=T)
-    #appspace[PlotPage.table.model]=rGtkDataFrame(df)
-    #PlotPage.table.model <- rGtkDataFrame(df)
-    #SeqFrame.table.view=gtkTreeView()
     ## -------------------------------------------------------------------------
     ## UImanager 
     
     uimanager = gtkUIManager()
-    
+    # define main window
     main_window <- gtkWindow(show = FALSE)
     # change title (property)
     main_window["title"] <- "SeqViz"
@@ -118,7 +98,7 @@ SeqViz=function(){
             title="Choose a Bam file",
             parent=window,
             action="open",
-            # the names of variable are mapped above this line
+            # the names of variables are mapped above this line
             button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
             button2_label="gtk-open", button2_response=GtkResponseType["accept"]) 
         
@@ -182,22 +162,13 @@ SeqViz=function(){
             # fill in the content
             appspace[annotationFile.list][[data.name]]=file
             # set active.SeqFrame to inserted annotationFile
-            cat("active.annotationFile set to inserted annotationFile ",data.name,"\n")
+            cat("active.annotationFile set to inserted annotationFile",data.name,"\n")
             appspace[active.annotationFile]=file
             
             # insert.node
             insert.node(node.name=data.name,
                         tree.view=annotationFile.hierachy.view,
                         method="append")
-            
-            
-            
-            
-            
-            
-            #data=getannotation(annotationFile=file)
-            #anno=annotation(data)
-            #appspace[annotation]=anno
         }
         dialog$destroy()
         
@@ -210,44 +181,23 @@ SeqViz=function(){
             title="Choose a CSV file",
             parent=window,
             action="open",
-            # the names of variable are mapped above this line
-            #button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
+            # button1_label="gtk-cancel", button1_response=GtkResponseType["cancel"], 
             button2_label="gtk-open", button2_response=GtkResponseType["accept"]) 
         
         if(dialog$run()==GtkResponseType["accept"]){
-            
-            ## the current implementation only works for one dataset, 
-            ## if new data are selected, it will overwrite the old one
-            ## need a list to store if want to support multiple files
-            
-            # assign data.frame to appspace for passing of variables
-            # no need to put the process, only sf is used for plotting
+            # get file name
             file=dialog$getFilename()
-            
-            #df=read.csv(file=file,as.is=T,header=T)
-            #if(dim(df))
-            
-            # sf=file2sf(file)
+            # read in and convert file into SeqFrame
             sf=SeqFrame(file=file)
             
             # add an veggi name to sf for easy finding it when plotting
+            # veggi name is not used, it is optional for future functions
             data.name=basename(file)
             keyword(sf)$VEGGI.NAME=data.name
             
-            # if it only have one node, create a list, 
-            # else add into the existing list
-            
-            #             on startup, (only) 4 views in appspace
-            #             csv.tree.view 
-            #             table.view
-            #             
-            #             bam.tree.view
-            #             text.view
-            
-            
             # if there is no SeqFrame.list in appspace, create one, else append
             # here using tree.view.length to determine
-            # can also by existence of SeqFrame.list in appspace
+            # can also determined by existence of SeqFrame.list in appspace
             # exists("SeqFrame.list",envir=.AppEnv)
             
             model=appspace[SeqFrame.hierachy.view]$getModel()
@@ -261,13 +211,13 @@ SeqViz=function(){
             # fill in the content
             appspace[SeqFrame.list][[data.name]]=sf
             
-            # set active.SeqFrame to inserted SeqFrame
-            cat("active.SeqFrame set to inserted SeqFrame ",data.name,"\n")
-            appspace[active.SeqFrame]=sf
-            
             # active.SeqFrame is decided here when new data inserted
             # later it is specified by select.node
             # set active.SeqFrame to the newly loaded SeqFrame
+            
+            # set active.SeqFrame to inserted SeqFrame
+            cat("active.SeqFrame set to inserted SeqFrame ",data.name,"\n")
+            appspace[active.SeqFrame]=sf
             
             # althernatively can
             # use selected node to set the active SeqFrame
@@ -285,6 +235,7 @@ SeqViz=function(){
         #print(is.environment(.GlobalEnv))
         #print(environment())
         #print(parent.env(environment()))
+        
         dialog$destroy()
         
         ## consider a way to do the calculation after the file selection
@@ -293,7 +244,7 @@ SeqViz=function(){
     
     
     ## -------------------------------------------------------------------------
-    ## Save_CSV
+    ## Save_CSV   
     Save_CSV=function(widget, window) {
         dialog<-gtkFileChooserDialog(
             title="Enter a name for the file",
@@ -317,9 +268,6 @@ SeqViz=function(){
         
     }
     
-    # note this only saves the current active window which is show at the top of
-    # the x11 window
-    
     ## -------------------------------------------------------------------------
     ## Save_PDF
     Save_PDF=function(widget, window) {
@@ -337,19 +285,8 @@ SeqViz=function(){
             cat("\nPDF file saved to ",file.name,"\n")
             dev.copy2pdf(file = file.name)
             dialog$destroy()
-            
-        } #else if(dialog$run()==GtkResponseType["cancel"])
-        #dialog$destroy()
-        # need to click twice to close, same as the close button
-        
-        
+        } 
     }
-    
-    
-    
-    ## open_bigWig
-    ## it would be nice one can simply input UCSC track location, then look at it globally
-    ## add a button conversion between UCSC 
     
     ## -------------------------------------------------------------------------
     ## Quit
@@ -421,6 +358,7 @@ SeqViz=function(){
     }    
     
     ## -------------------------------------------------------------------------
+    ## Demo_Annotation
     Demo_Annotation=function(widget,window) {
         
         file=system.file("extdata","refGene.csv",package ="SeqData")
@@ -449,6 +387,7 @@ SeqViz=function(){
         
     }
     ## -------------------------------------------------------------------------
+    ## Demo_BaseCall
     Demo_BaseCall=function(widget,window) {
         
         file=system.file("extdata","chrY_mC.csv",package="SeqData")
@@ -474,49 +413,10 @@ SeqViz=function(){
                     method="append")
     }    
     
-    ## -------------------------------------------------------------------------
-    ## tool group
-    #     UnDo=function(action,...) 
-    #         statusbar$push(statusbar$getContextId("message"), 
-    #                        action$getName())
-    #     
-    #     Redo=function(action,...) 
-    #         statusbar$push(statusbar$getContextId("message"), 
-    #                        action$getName())
-    #     
-    #     Preference=function(action,...) 
-    #         statusbar$push(statusbar$getContextId("message"), 
-    #                        action$getName())
-    #     
-    #     DataSummary=function(action,...) 
-    #         statusbar$push(statusbar$getContextId("message"), 
-    #                        action$getName())
-    #     
-    #     
-    #     GetMeasure=function(action,...) 
-    #         statusbar$push(statusbar$getContextId("message"), 
-    #                        action$getName())
-    
-    ##--------------------------------------------------------------------------
-    ## plot buttons group
-    PolygonGate=polygon.gate
-    
-    RectangleGate=function(action,...) 
-        statusbar$push(statusbar$getContextId("message"), 
-                       action$getName())
-    
-    CountourPlot=function(action,...) 
-        statusbar$push(statusbar$getContextId("message"), 
-                       action$getName())
-    
-    HistogramPlot=function(action,...) 
-        statusbar$push(statusbar$getContextId("message"), 
-                       action$getName())
     
     ##==========================================================================
     ## defining the actions (action groups)
     ##==========================================================================
-    # xml defines what icon to put into tool bar and menu bar
     
     
     ##--------------------------------------------------------------------------
@@ -527,44 +427,30 @@ SeqViz=function(){
         
         file = list("File",NULL,"File",NULL,NULL,NULL),
         
-        open_bam = list("Open_Bam", "gtk-open", "Open_Bam", NULL, "Open Bam File", Open_Bam),
-        open_anno = list("Open_Annotation", "gtk-open", "Open_Annotation", NULL, "Open Annotation File", Open_Annotation),
-        open_csv = list("Open_CSV", "gtk-open", "Open_CSV", NULL, "Open CSV File", Open_CSV),
-        save_csv = list("Save_CSV", "gtk-save", "Save_CSV", "<alt>S", "Save CSV File", Save_CSV),
-        save_pdf = list("Save_PDF", "gtk-save", "Save_PDF", "<ctrl>S", "Save PDF File", Save_PDF),
+        open_bam = list("Open_Bam", "gtk-open", "Open_Bam", 
+                        NULL, "Open Bam File", Open_Bam),
+        
+        open_anno = list("Open_Annotation", "gtk-open", "Open_Annotation", 
+                         NULL, "Open Annotation File", Open_Annotation),
+        
+        open_csv = list("Open_CSV", "gtk-open", "Open_CSV", 
+                        NULL, "Open CSV File", Open_CSV),
+        
+        save_csv = list("Save_CSV", "gtk-save", "Save_CSV", 
+                        "<alt>S", "Save CSV File", Save_CSV),
+        
+        save_pdf = list("Save_PDF", "gtk-save", "Save_PDF", 
+                        "<ctrl>S", "Save PDF File", Save_PDF),
+        
         quit = list("Quit", "gtk-quit", "_Quit", "<ctrl>Q", "Quit", Quit)
         
-        #         edit = list("Edit", NULL, "Edit", NULL, NULL, NULL),
-        #         undo = list("Undo", "gtk-undo", "_Undo", "<ctrl>Z",  "Undo change", UnDo),
-        #         redo = list("Redo", "gtk-redo", "_Redo", "<ctrl>U", "Redo change", Redo)   
     )
     
     fileActionGroup$addActions(entries=fileActionEntries,user.data=main_window)
-    ##--------------------------------------------------------------------------
-    #     # toolActionGroup
-    #     toolActionGroup=gtkActionGroup(name="toolActionGroup")
-    #     
-    #     toolActionEntries=list(  # name,ID,label,accelerator,tooltip,callback
-    #         
-    #         tool=list("Tools",NULL,"Tools",NULL,NULL,NULL),
-    #         preference=list("Preference",NULL,"Preference",NULL,"Set Computation Preference",Preference),
-    #         
-    #         data_summary=list("DataSummary",NULL,"DataSummary",NULL,"Sequencing Data Summary",DataSummary),
-    #         get_measure=list("GetMeasure",NULL,"GetMeasure",NULL,"Sequencing Data Summary",DataSummary),
-    #         
-    #         gate = list("Gate", NULL, "Gate", NULL, NULL, NULL),
-    #         polygon_gate=list("PolygonGate",NULL,"PolygonGate",NULL,"Polygon Gate",PolygonGate),
-    #         rectangle_gate=list("RectangleGate",NULL,"RectangleGate",NULL,"Rectangle Gate",RectangleGate),
-    #         
-    #         plot = list("Plot", NULL, "Plot", NULL, NULL, NULL),
-    #         countour_plot=list("CountourPlot",NULL,"CountourPlot",NULL,"Countour Plot",CountourPlot),
-    #         histogram_plot=list("HistogramPlot",NULL,"HistogramPlot",NULL,"Histogram Plot",HistogramPlot)
-    #         
-    #     )
     
-    #     toolActionGroup$addActions(entries=toolActionEntries,user.data=main_window)
     
     ##--------------------------------------------------------------------------
+    ## helpActionGroup
     helpActionGroup <- gtkActionGroup(name="helpActionGroup")
     helpActionEntries <- list(  # name,ID,label,accelerator,tooltip,callback
         help = list("Help",NULL,"Help",NULL,NULL,NULL),
@@ -572,11 +458,10 @@ SeqViz=function(){
         about = list("About", "gtk-about", "About", NULL, "About SeqViz", 
                      NULL)
     )
-    #helpActionGroup$addActions(helpActionEntries)
     helpActionGroup$addActions(entries=helpActionEntries,user.data=main_window)
     
     ##--------------------------------------------------------------------------
-    #demo action group
+    ## demo action group
     demoActionGroup <- gtkActionGroup(name="demoActionGroup")
     demoActionEntries <- list(  # name,ID,label,accelerator,tooltip,callback
         
@@ -593,9 +478,8 @@ SeqViz=function(){
     
     
     ##--------------------------------------------------------------------------
-    #insert the action group into the UI manager
+    ## insert the action group into the UI manager
     uimanager$insertActionGroup(fileActionGroup,0)
-    #uimanager$insertActionGroup(toolActionGroup,0)
     uimanager$insertActionGroup(helpActionGroup,0)
     uimanager$insertActionGroup(demoActionGroup,0)
     
@@ -604,6 +488,8 @@ SeqViz=function(){
     ##==========================================================================
     ## Defining UI layout
     ##==========================================================================
+    ## SeqViz-menu.xml 
+    ## defines layout (what icon to put into) of tool bar and menu bar
     xml=system.file("etc", "SeqViz-menu.xml",package = "SeqViz")
     
     id =  uimanager$addUiFromFile(xml)
@@ -613,11 +499,9 @@ SeqViz=function(){
     
     ## -------------------------------------------------------------------------
     ## Creating widgets for the actions
-    
     menubar <- uimanager$getWidget("/menubar")
     toolbar <- uimanager$getWidget("/toolbar")
     statusbar <- gtkStatusbar()
-    
     
     ## -------------------------------------------------------------------------
     ## Integrating the components
@@ -628,10 +512,6 @@ SeqViz=function(){
     vbox$packStart(child=menubar, expand=FALSE, fill=FALSE, padding=0)
     vbox$packStart(child=toolbar, expand=FALSE, fill= FALSE, padding=0)
     
-    
-    
-    
-    
     # Creates a new GtkNotebook widget with no pages.
     notebook=gtkNotebook(show=TRUE)
     notebook$setTabPos(pos="top")
@@ -641,6 +521,7 @@ SeqViz=function(){
     PlotPage=gtkHPanedNew()
     PlotPage$setPosition(position=393)
     
+    # code to determine the position
     # > gtkPanedGetPosition(DataPage)
     # [1] 398
     # > gtkPanedGetPosition(PlotPage)
@@ -650,97 +531,55 @@ SeqViz=function(){
     notebook$appendPage(child=DataPage,tab.label=gtkLabel("Data"))
     notebook$appendPage(child=PlotPage,tab.label=gtkLabel("Plot"))
     
-    #notebook$setTabLabelPacking(child=DataPage,expand=T,fill=T,pack.type="Top")
-    
-    # setTabLabelPacking is about to deprecate
-    # use tab-expand and tab-fill instead
-    # notebook$tab-expand(child=DataPage)
-    # notebook$DataPage$tab-expand=T
-    
-    
-    # > DataPage["tab-expand"]
-    # Error in gObjectGet(obj, c(value, ...)) : Invalid property tab-expand!
-    
-    # notebook$getTabDetachable(DataPage) this is operation on child
-    # tab-fill and tab expand is child property
-    
-    ## gtkContainerChildSetProperty(object, child, property.name, value)
-    
-    
     notebook$childSetProperty(child=DataPage,"tab-expand",T)
     notebook["homogeneous"]=TRUE
     
+    # adjust the packing of the child of gtknotebook
     vbox$packStart(child=notebook, expand=TRUE, fill=TRUE, padding=0)
     vbox$packStart(child=statusbar, expand=FALSE, fill=FALSE, padding=0)
     
     
+    ## -------------------------------------------------------------------------
+    ## PlotPage
+    ## -------------------------------------------------------------------------
     
-    # how to adjust the packing of the child of gtknotebook
-    # DataPage["tab-expand"]=T
-    # DataPage$propInfo()
-    # notebook$propInfo()
-    # notebook$packStart(DataPage,expand=T,fill=TRUE, padding=0)
-    
-    
-    ## -----------------------------------------------------------------------------
-    ## Plot pane
-    
-    # PlotPage.leftPane
     PlotPage.leftPane=gtkVBox()
     PlotPage.rightPane=gtkVBox()
     PlotPage$pack1(PlotPage.leftPane,resize=T,shrink=T)
     PlotPage$pack2(PlotPage.rightPane,resize=T,shrink=T)
     
-    
-    ## Plot pane - Data
-    
-    # plot.data.file=gtkFileChooserNew()
-    # gate=gtkButton(label="Gate")
-    
-    # plot.data.label=gtkLabel("Plot Data")
-    
-    
-    
+    ## -------------------------------------------------------------------------
+    ## PlotPage.leftPane - Gates
+    ## -------------------------------------------------------------------------
     ## create tree model for data selection
-    
     # define gtkTreeStore model with one column stores "character"
     PlotPage.data.model=gtkTreeStore("gchararray")
-    
-    # fill in data to PlotPage.data.model
     
     # setup gtkTreeView to display gtkTreeStore model
     SeqFrame.hierachy.view=gtkTreeView()
     
+    ## somehow this single line is able to make the view dynamic seems wiget is
+    ## constantly lisenting to varialbes? all the changes in gate is made to
+    ## appspace[SeqFrame.hierachy.view] and it is able to insert node into this
+    ## view in this SeqViz function environment
+    
     ## share the view
-    appspace[SeqFrame.hierachy.view]=SeqFrame.hierachy.view
-    #appspace[SeqFrame.table.view]=SeqFrame.table.view
-    
-    #### somehow this single line is able to make the view dynamic
-    ## seems wiget is constantly lisenting to varialbes?
-    ## all the changes in gate is made to appspace[SeqFrame.hierachy.view]
-    ## and it is able to insert node into this view in this SeqViz function environment
-    
+    appspace[SeqFrame.hierachy.view]=SeqFrame.hierachy.view 
     
     
     # insert column one by one
-    SeqFrame.hierachy.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
-                                                  #title="Plot Data",
-                                                  title="",
-                                                  cell=gtkCellRendererText(),
-                                                  text=1-1)  
+    # position= -1 append, 0 fill
+    SeqFrame.hierachy.view$insertColumnWithAttributes(position=0,   
+                                                      title="",
+                                                      cell=gtkCellRendererText(),
+                                                      text=1-1)  
     
     # add model to view
     SeqFrame.hierachy.view$setModel(PlotPage.data.model)
     
     
-    
-    
-    
-    
-    gate.label=gtkLabel("Gate")
-    
+    ## -------------------------------------------------------------------------
     ## Gate buttons
-    
     gate.button.table=gtkTable(rows=3, columns=3, homogeneous=T)
     
     polygon.gate.button=gtkButton(label="Polygon")
@@ -749,9 +588,9 @@ SeqViz=function(){
     range.gate.button=gtkButton(label="Range")
     norm2.gate.button=gtkButton(label="Norm2")
     
-    
+    gate.label=gtkLabel("Gate")
     gate.button.table$attach(
-        gate.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
+        gate.label,left.attach=1,2, top.attach=0,1)
     
     gate.button.table$attach(
         quadrant.gate.button, left.attach = 0,1, top.attach = 1,2)
@@ -765,86 +604,33 @@ SeqViz=function(){
     gate.button.table$attach(
         range.gate.button, left.attach = 0,1, top.attach = 2,3)
     
-    
-    #gate.button.table$attach(norm2.gate.button, left.attach = 1,2, top.attach = 2,3)
-    
-    
-    
-    # PlotPage.leftPane$packStart(child=plot.data.label,expand=F,fill=F,padding=0)
-    
-    PlotPage.leftPane$packEnd(child=gate.button.table,expand=F,fill=F,padding=0)
-    # PlotPage.leftPane$packEnd(child=gate.label,expand=F,fill=F,padding=0)
-    
+    # PlotPage.leftPane$packStart(child=gate.label,expand=F,fill=F,padding=0)
     PlotPage.leftPane$packStart(child=SeqFrame.hierachy.view,expand=T,fill=T,padding=0)
+    PlotPage.leftPane$packEnd(child=gate.button.table,expand=F,fill=F,padding=0)
     
-    ## PlotPage.rightPane
     
+    ## -------------------------------------------------------------------------
+    ## PlotPage.rightPane - Plots
+    ## -------------------------------------------------------------------------
     ## contains a table of buttons and an gtkTreeView 
     
-    ##------------------------------------------------------------------------------
+    ## -------------------------------------------------------------------------
     ## table
     
-    #file=system.file("extdata", "Demo.csv",package = "SeqViz")
-    #sf=file2sf(file)
-    # load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.ff.rda")
-    #load("~/DoScience/DoScience/Projects/Clover/Dev/Data/2014-08-29/Male.Het.fs.rda")
-    
-    # data(Cars93 , package="MASS")
-    
-    # gtkTreeView for the Info
-    # construct rGtkDataFrame
-    #PlotPage.table.model <- rGtkDataFrame (exprs(Male.Het.ff))
-    
-    #appspace[PlotPage.table.model]=rGtkDataFrame(df)
-    
-    #PlotPage.table.model <- rGtkDataFrame (exprs(appspace[active.SeqFrame]))
-    
-    # Displaying data as a list or table
-    #SeqFrame.table.view<-gtkTreeView(appspace[PlotPage.table.model])
-    
-    
     # SeqFrame.table.view need to made public to able to be dynamic display
-    #SeqFrame.table.view=appspace[SeqFrame.table.view]
-    
     # this one line doesn't work
     # appspace[SeqFrame.table.view]=gtkTreeView()
+    
     # this one adds to the main window
     SeqFrame.table.view=gtkTreeView()
     # this one duplicate into appspace (and all objects are self updating)
     appspace[SeqFrame.table.view]=SeqFrame.table.view
     
     # construct gtkTreeViewColumn
-    #PlotPage.info.column<-gtkTreeViewColumn()
-    
-    # PlotPage.info.column$setTitle("Manufacturer")
-    
-    #cell_renderer<-gtkCellRendererText()
-    #PlotPage.info.column$packStart(cell_renderer)
-    #PlotPage.info.column$addAttribute(cell_renderer,"text",0)
-    
-    # insert gtkTreeViewColumn to the first position of the column
-    # SeqFrame.table.view$insertColumn(PlotPage.info.column,0)
-    
-    # no need to initilize
-    #         mapply(SeqFrame.table.view$insertColumnWithAttributes,
-    #                position=-1,
-    #                title=colnames(appspace[PlotPage.table.model]),
-    #                cell=list(gtkCellRendererText()),text=seq_len(ncol(appspace[PlotPage.table.model]))-1
-    #         )
-    
-    
-    #     mapply(appspace[SeqFrame.table.view]$insertColumnWithAttributes,
-    #            position=-1,
-    #            title=colnames(appspace[PlotPage.table.model]),
-    #            cell=list(gtkCellRendererText()),text=seq_len(ncol(appspace[PlotPage.table.model]))-1
-    #     )
-    
     PlotPage.info.scrolled.window<-gtkScrolledWindow()
-    #PlotPage.info.scrolled.window$add(appspace[SeqFrame.table.view])
     PlotPage.info.scrolled.window$add(SeqFrame.table.view)
     
     ## Graph buttons
-    
     plot.button.table=gtkTable(rows=2, columns=3, homogeneous=T)
     
     countour.plot.button=gtkButton(label="Countour")
@@ -869,17 +655,17 @@ SeqViz=function(){
     PlotPage.rightPane$packEnd(child=PlotPage.info.scrolled.window,expand=T,fill=T,padding=0)
     
     ## -------------------------------------------------------------------------
-    ## Data page
+    ## DataPage
+    ## -------------------------------------------------------------------------
     
-    ## same pattern as PlotPage, this also reflects the analysis similarity
-    
-    # DataPage.leftPane
     DataPage.leftPane=gtkVBox()
     DataPage.rightPane=gtkVBox()
     DataPage$pack1(DataPage.leftPane,resize=T,shrink=T)
     DataPage$pack2(DataPage.rightPane,resize=T,shrink=T)
     
-    
+    ## -------------------------------------------------------------------------
+    ## DataPage.leftPane - Data
+    ## -------------------------------------------------------------------------
     # define gtkTreeStore model with one column stores "character"
     DataPage.data.model=gtkTreeStore("gchararray")
     
@@ -887,167 +673,111 @@ SeqViz=function(){
     bamFile.hierachy.view=gtkTreeView()
     
     # insert column one by one
-    bamFile.hierachy.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
-                                                  #title="Sequencing Data",
-                                                  title="",
-                                                  cell=gtkCellRendererText(),
-                                                  text=1-1)  
+    # position=-1 append, 0 fill
+    bamFile.hierachy.view$insertColumnWithAttributes(position=0,   
+                                                     #title="Sequencing Data",
+                                                     title="",
+                                                     cell=gtkCellRendererText(),
+                                                     text=1-1)  
     
     # add model to view
     bamFile.hierachy.view$setModel(DataPage.data.model)
-    
     appspace[bamFile.hierachy.view]=bamFile.hierachy.view
+    ## Annotation buttons and button tables removed for future use
     
-    annotation.label=gtkLabel("")
-    #annotation.label=gtkLabel("Merge&SamplingCSV")
-    
-    ## Annotation buttons
-    
-    annotation.button.table=gtkTable(rows=3, columns=3, homogeneous=T)
-    
-    gene=gtkButton(label="MergeCSV")
-    promoter=gtkButton(label="SampleCSV")
-    retro=gtkButton(label="")
-    repeats=gtkButton(label="")
-    bins=gtkButton(label="")
-    user=gtkButton(label="")
-    
-    #annotation.button.table$attach(annotation.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
-    
-    #annotation.button.table$attach(gene, left.attach = 0,1, top.attach = 1,2)
-    #annotation.button.table$attach(promoter, left.attach = 1,2, top.attach = 1,2)
-    #annotation.button.table$attach(retro, left.attach = 2,3, top.attach = 1,2)
-    #annotation.button.table$attach(repeats, left.attach = 0,1, top.attach = 2,3)
-    #annotation.button.table$attach(bins, left.attach = 1,2, top.attach = 2,3)
-    #annotation.button.table$attach(user, left.attach = 2,3, top.attach = 2,3)
-    
-    
-    # PlotPage.leftPane$packStart(child=plot.data.label,expand=F,fill=F,padding=0)
-    
-    DataPage.leftPane$packEnd(child=annotation.button.table,expand=F,fill=F,padding=0)
-    # PlotPage.leftPane$packEnd(child=gate.label,expand=F,fill=F,padding=0)
-    
+    # pack DataPage.leftPane
     DataPage.leftPane$packStart(child=bamFile.hierachy.view,expand=T,fill=T,padding=0)
     
-    ##---------------------------------------------------------------------------
-    ## DataPage.rightPane
     
+    ## -------------------------------------------------------------------------
+    ## Annotation buttons
+    ## structural, future use
+    #     annotation.button.table=gtkTable(rows=3, columns=3, homogeneous=T)
+    #     
+    #     gene=gtkButton(label="")
+    #     promoter=gtkButton(label="")
+    #     retro=gtkButton(label="")
+    #     repeats=gtkButton(label="")
+    #     bins=gtkButton(label="")
+    #     user=gtkButton(label="")
+    #     
+    #     annotation.label=gtkLabel("")
+    #     annotation.button.table$attach(annotation.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
+    #     annotation.button.table$attach(gene, left.attach = 0,1, top.attach = 1,2)
+    #     annotation.button.table$attach(promoter, left.attach = 1,2, top.attach = 1,2)
+    #     annotation.button.table$attach(retro, left.attach = 2,3, top.attach = 1,2)
+    #     annotation.button.table$attach(repeats, left.attach = 0,1, top.attach = 2,3)
+    #     annotation.button.table$attach(bins, left.attach = 1,2, top.attach = 2,3)
+    #     annotation.button.table$attach(user, left.attach = 2,3, top.attach = 2,3)
+    #     
+    #     DataPage.leftPane$packEnd(child=annotation.button.table,expand=F,fill=F,padding=0)
+    
+    
+    ## -------------------------------------------------------------------------
+    ## DataPage.rightPane - Annotations
+    ## -------------------------------------------------------------------------
     ## contains a table of buttons and an gtkTreeView 
     
-    # gtkTreeView for the Info
-    # construct rGtkDataFrame
+    # gtkTreeView for the Info, construct using rGtkDataFrame, can also define
+    # it as treeStore, future have child nodes
     
-    
-    
-    
-    #annotation=c("Gene_exonic","Gene_body","TSS_1kb","Retrotransposons","SimpleRepeats","Bins_1kb" )
-    #anno.df=data.frame(annotation)
-    #DataPage.anno.model <- rGtkDataFrame (anno.df)
-    #DataPage.anno.model$setFrame(Cars93[1:5 , 1:5])
-    
-    
-    # can also define it as treeStore, future have child nodes
     # define gtkTreeStore model with one column stores "character"
     DataPage.anno.model=gtkTreeStore("gchararray")
     # setup gtkTreeView to display gtkTreeStore model
     annotationFile.hierachy.view=gtkTreeView()
     # insert column one by one
-    annotationFile.hierachy.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
-                                                  #title="Sequencing Data",
-                                                  title="",
-                                                  cell=gtkCellRendererText(),
-                                                  text=1-1)  
+    # -1 append, 0 fill
+    annotationFile.hierachy.view$insertColumnWithAttributes(position=0,   
+                                                            title="",
+                                                            cell=gtkCellRendererText(),
+                                                            text=1-1)  
     
     # add model to view
     annotationFile.hierachy.view$setModel(DataPage.anno.model)
     
-    
-    
-    
-    
-    
-    
-    # Displaying data as a list or table
-    # annotationFile.hierachy.view<-gtkTreeView(DataPage.anno.model)
-    
-    ## for simplicity for now, do not show internal annotaion yet
-    # annotationFile.hierachy.view<-gtkTreeView()
-    
-    #     # construct gtkTreeViewColumn
-    #     DataPage.anno.column<-gtkTreeViewColumn()
-    #     
-    #     #DataPage.anno.column$setTitle("Annotation")
-    #     
-    #     cell_renderer<-gtkCellRendererText()
-    #     DataPage.anno.column$packStart(cell_renderer)
-    #     DataPage.anno.column$addAttribute(cell_renderer,"text",0)
-    #     
-    #     # insert gtkTreeViewColumn to the first position of the column
-    #     # annotationFile.hierachy.view$insertColumn(DataPage.anno.column,0)
-    #     
-    #     mapply(annotationFile.hierachy.view$insertColumnWithAttributes,
-    #            position=-1,
-    #            title=colnames(DataPage.anno.model),
-    #            cell=list(gtkCellRendererText()),text=seq_len(ncol(DataPage.anno.model))-1)
+    ## for simplicity for now, annotation view does not show internal annotaion
+    ## yet, instead annotation is printed out in the console when clicked
     
     appspace[annotationFile.hierachy.view]=annotationFile.hierachy.view
-    #     annotationFile.hierachy.view=gtkTreeView()    
-    #     
+    
     DataPage.anno.scrolled.window<-gtkScrolledWindow()
     DataPage.anno.scrolled.window$add(annotationFile.hierachy.view)
     
-    #     # define gtkTreeStore model with one column stores "character"
-    #     DataPage.anno.model=gtkTreeStore("gchararray")
-    #     
-    #     # setup gtkTreeView to display gtkTreeStore model
-    #     annotationFile.hierachy.view=gtkTreeView()
-    #     
-    #     # insert column one by one
-    #     annotationFile.hierachy.view$insertColumnWithAttributes(position=0,   # -1 append, 0 fill
-    #                                                   #title="Sequencing Data",
-    #                                                   title="",
-    #                                                   cell=gtkCellRendererText(),
-    #                                                   text=1-1)  
-    #     
-    #     # add model to view
-    #     annotationFile.hierachy.view$setModel(DataPage.anno.model)
-    #     appspace[annotationFile.hierachy.view]=annotationFile.hierachy.view
-    #     
-    
-    
-    
-    ## Graph buttons
-    
-    function.button.table=gtkTable(rows=3, columns=3, homogeneous=T)
-    
-    data.summary.button=gtkButton(label="dataSummary")
-    get.measure.button=gtkButton(label="getMeasure")
-    findEnriched=gtkButton(label="findEnrichedRegion")
-    
-    ## function 
-    #count.method.label=gtkLabel("count method")
-    # count.method.label=gtkLabel("Select count method, Drag&Drop annotation onto data to count")
-    #
-    count.method.label=gtkLabel("Drag&Drop annotation")
-    ## TOD: use a frame surrounding the button and the radio button is a good way to inlcude this information
-    
-    
-    #function.button.table$attach(function.label,left.attach=0,1, right.attach=2,3, top.attach=0,1)
-    
-    #     function.button.table$attach(data.summary.button, left.attach = 0,1, top.attach = 1,2)
-    #     function.button.table$attach(get.measure.button, left.attach = 1,2, top.attach = 1,2)
-    #     function.button.table$attach(findEnriched, left.attach = 2,3, top.attach = 1,2)
-    
-    #function.button.table$attach(histogram.plot.button, left.attach = 0,1, top.attach = 1,2)
-    
     
     ## -------------------------------------------------------------------------
-    ## radio buttons for count method
+    ## function buttons
+    function.button.table=gtkTable(rows=3, columns=3, homogeneous=T)
     
+    #data.summary.button=gtkButton(label="dataSummary")
+    #get.measure.button=gtkButton(label="getMeasure")
+    #findEnriched=gtkButton(label="findEnrichedRegion")
+    
+    ## functions 
+    count.method.label=gtkLabel("Drag&Drop annotation")
+    
+    ## future use
+    #     ## TOD: use a frame surrounding the button and the radio button 
+    #     function.button.table$attach(
+    #         function.label,left.attach=0,1,right.attach=2,3, top.attach=0,1)
+    #     function.button.table$attach(
+    #         data.summary.button, left.attach = 0,1, top.attach = 1,2)
+    #     function.button.table$attach(
+    #         get.measure.button, left.attach = 1,2, top.attach = 1,2)
+    #     function.button.table$attach(
+    #         findEnriched, left.attach = 2,3, top.attach = 1,2)
+    #     function.button.table$attach(
+    #         histogram.plot.button, left.attach = 0,1, top.attach = 1,2)
+    
+    #     ## add a spinner for fun 
+    #     spinner <- gtkSpinner()
+    #     spinner["visible"]=F
+    #     spinner["active"]=F
+    #    appspace[spinner]=spinner
+    # function.button.table$attach(spinner, left.attach = 2,3, top.attach = 2,3) 
+    
+    ## -------------------------------------------------------------------------
+    ## radio buttons for count method    
     count.method=c("read counts","read coverage","base percentage")
-    
-    #count.method=vector("list",length(count.method))
-    #names(count.method)=count.method
     
     names(count.method)=count.method
     mode(count.method)="list"
@@ -1056,9 +786,7 @@ SeqViz=function(){
     for (i in 1:length(count.method)) {
         count.method[[i]]=gtkRadioButton(label=count.method[i])
     }
-    
-    # put the buttons into one group ( the first buttons group)
-    # gtkRadioButtonSetGroup(object=count.method[[2]],group=g) 
+    # put the buttons into one group (the first buttons group)
     g=gtkRadioButtonGetGroup(count.method[[1]])
     
     buttons.tobe.grouped=count.method[-1]
@@ -1069,6 +797,8 @@ SeqViz=function(){
     ## put radio button's selection into appspace
     appspace[count.method]=count.method
     
+    
+    # put radio button in the function button table
     function.button.table$attach(
         count.method[[1]], left.attach = 0,1, top.attach = 1,2)
     function.button.table$attach(
@@ -1076,17 +806,7 @@ SeqViz=function(){
     function.button.table$attach(
         count.method[[3]], left.attach = 2,3, top.attach = 1,2)
     
-
-    ## -------------------------------------------------------------------------
-    ## add a spinner for fun
-    # also shows progress 
-    #     spinner <- gtkSpinner()
-    #     spinner["visible"]=F
-    #     spinner["active"]=F
-    
-    #    appspace[spinner]=spinner
-    # function.button.table$attach(spinner, left.attach = 2,3, top.attach = 2,3)
-    
+    # pack DataPage.rightPane
     DataPage.rightPane$packStart(
         child=function.button.table,expand=F,fill=F,padding=0)
     DataPage.rightPane$packStart(
@@ -1094,15 +814,7 @@ SeqViz=function(){
     DataPage.rightPane$packEnd(
         child=DataPage.anno.scrolled.window,expand=T,fill=T,padding=0)
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    # show all widgets
     main_window$showAll()
     
     ##==========================================================================
@@ -1112,8 +824,7 @@ SeqViz=function(){
     
     ## -------------------------------------------------------------------------
     ## drag and drops
-    
-    ## drag and drop setup
+    # dnd setup
     TARGET <- c(string = 0)
     targetentries <-
         list(
@@ -1121,9 +832,8 @@ SeqViz=function(){
             c(target="text/plain", flags=0, info=TARGET[["string"]]) 
         )
     
-    
-    # gtkDragSourceSet, this won't allow row-wise drag-drop, it is widget wise, works between two views
-    
+    # gtkDragSourceSet, this won't allow row-wise drag-drop, it is widget wise,
+    # works between two views
     gtkDragSourceSet(object=annotationFile.hierachy.view, 
                      start.button.mask="button1-mask", 
                      targets=targetentries, 
@@ -1133,18 +843,14 @@ SeqViz=function(){
                    targets=targetentries, 
                    actions="copy")
     
-    # test highlight rows, as it is not easy to locate which row the drop is on, some times gives (unknown enum) errors if it is in the middle of two row.
-    
+    # test highlight rows, as it is not easy to locate which row the drop is on,
+    # some times gives (unknown enum) errors if it is in the middle of two row.
     gtkTreeViewEnableModelDragDest(obj=bamFile.hierachy.view, 
                                    targets=targetentries, 
                                    actions="copy")
-    
-    
-    
-    
-    
     ## -------------------------------------------------------------------------
     ## connect signals
+    
     # connect drag and drop 
     gSignalConnect(obj=annotationFile.hierachy.view, signal="drag-data-get", f=drag)
     gSignalConnect(obj=bamFile.hierachy.view, signal="drag-data-received", f=drop.and.count)
@@ -1157,33 +863,20 @@ SeqViz=function(){
     
     gSignalConnect(obj=DDplus.plot.button, signal="clicked", f=DDplus.plot)
     
-    
     gSignalConnect(obj=quadrant.gate.button, signal="clicked", f=quadrant.gate)   
     gSignalConnect(obj=range.gate.button, signal="clicked", f=range.gate)    
     gSignalConnect(obj=rectangle.gate.button, signal="clicked", f=rectangle.gate)
     
     
-    # connect key-press-event with view
-    # gSignalConnect(SeqFrame.hierachy.view, "key-press-event", delete.node)
-    
-    # adding variable doesn't work
-    #     gSignalConnect(
-    #         obj=appspace[SeqFrame.hierachy.view], signal="key-press-event", f=delete.node(event,view=appspace[SeqFrame.hierachy.view],appspacelist=appspace[SeqFrame.list]))
-    
+    # connect key-press-event [delete] with view
     gSignalConnect(
         obj=appspace[SeqFrame.hierachy.view], signal="key-press-event", f=delete.node)
-    
     gSignalConnect(
         obj=appspace[bamFile.hierachy.view], signal="key-press-event", f=delete.node)
     gSignalConnect(
         obj=appspace[annotationFile.hierachy.view], signal="key-press-event", f=delete.node)
     
-    
-    gSignalConnect(obj=get.measure.button, signal="clicked", f=get.measure)
-    gSignalConnect(obj=data.summary.button, signal="clicked", f=data.summary)
-    
-    ## connect radio button count method change
-    ## output the selected radio button
+    ## connect radio button count method
     gSignalConnect(obj=SeqFrame.hierachy.view,signal="row-activated",f=update.table.view)
     
     # selected.annotation
@@ -1194,17 +887,3 @@ SeqViz=function(){
 }
 
 
-
-
-
-## nomenclature
-## tree.view  gtkTreeView is named as node.view and table.view for better discriminition
-
-
-
-
-# clear variables in the appspace
-# rm(list=ls(.AppEnv),envir=.AppEnv)
-
-# this assigns a variable called  "data.name" to .AppEnv
-# appspace[data.name]=appspace[ ]
